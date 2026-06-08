@@ -1,0 +1,308 @@
+/* ─── PAGE LAYOUT ─── */
+.login-page {
+    display: flex;
+    min-height: 100vh;
+    padding-top: 66px;
+}
+
+/* ─── SIDE DÉCORATIF ─── */
+.login-side {
+    width: 420px;
+    flex-shrink: 0;
+    background: var(--green-deep);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-bg {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 80% 60% at 10% 90%, rgba(76,175,80,0.2) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 10%, rgba(46,125,50,0.25) 0%, transparent 60%);
+}
+
+.side-content {
+    position: relative;
+    z-index: 1;
+    padding: 60px 48px;
+    color: white;
+}
+
+.side-icon {
+    width: 56px; height: 56px;
+    background: rgba(76,175,80,0.2);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    color: var(--green-soft);
+    margin-bottom: 28px;
+}
+
+.side-content h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.side-content h2 em {
+    font-style: italic;
+    color: var(--green-soft);
+}
+
+.side-content > p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 48px;
+}
+
+.side-quote {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 20px 24px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 12px;
+    border-left: 3px solid var(--green-soft);
+}
+
+.side-quote i {
+    color: var(--green-soft);
+    font-size: 16px;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.side-quote span {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.8);
+    font-style: italic;
+}
+
+/* ─── FORM WRAPPER ─── */
+.login-form-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 40px;
+}
+
+.form-card {
+    width: 100%;
+    max-width: 460px;
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(46,125,50,0.08);
+    padding: 44px;
+}
+
+/* ─── FORM HEADER ─── */
+.form-header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.form-icon {
+    width: 56px; height: 56px;
+    background: var(--green-light);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    color: var(--green-mid);
+    margin: 0 auto 16px;
+}
+
+.form-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--green-deep);
+    margin-bottom: 6px;
+}
+
+.form-header p {
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+/* ─── ALERTE ERREUR ─── */
+.alert-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fdecea;
+    border: 1px solid #f5c6cb;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--red);
+    margin-bottom: 20px;
+}
+
+.alert-error i { flex-shrink: 0; }
+
+/* ─── FORM ELEMENTS ─── */
+.form-group { margin-bottom: 22px; }
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-mid);
+    margin-bottom: 8px;
+}
+
+label i {
+    color: var(--green-mid);
+    margin-right: 4px;
+    font-size: 12px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    background: var(--green-pale);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px;
+    color: var(--text-dark);
+    transition: all 0.25s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: var(--green-mid);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+}
+
+input::placeholder { color: var(--text-light); }
+
+/* ─── MOT DE PASSE ─── */
+.password-container { position: relative; }
+.password-container input { padding-right: 44px; }
+
+.toggle-eye {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--text-light);
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.toggle-eye:hover { color: var(--green-mid); }
+
+/* ─── ERREUR CHAMP ─── */
+.error {
+    color: var(--red);
+    font-size: 12.5px;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* ─── OPTIONS ─── */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-mid);
+    font-weight: 400;
+    margin-bottom: 0;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px; height: 16px;
+    accent-color: var(--green-mid);
+    cursor: pointer;
+}
+
+.forgot-link {
+    font-size: 13.5px;
+    color: var(--green-mid);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.forgot-link:hover {
+    color: var(--green-deep);
+    text-decoration: underline;
+}
+
+/* ─── BOUTON ─── */
+.btn-submit {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(46,125,50,0.3);
+}
+
+.btn-submit:hover {
+    background: linear-gradient(135deg, var(--green-deep), #0f2a1a);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(46,125,50,0.4);
+}
+
+/* ─── LIEN INSCRIPTION ─── */
+.register-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+.register-link a {
+    color: var(--green-mid);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.register-link a:hover { text-decoration: underline; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+    .login-side { display: none; }
+}
+
+@media (max-width: 600px) {
+    .navbar { padding: 14px 20px; }
+    .login-form-wrapper { padding: 24px 16px; }
+    .form-card { padding: 28px 20px; }
+}

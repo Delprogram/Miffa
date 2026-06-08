@@ -1,0 +1,379 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIFFA — Mon espace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'global.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
+</head>
+
+<body>
+
+    <!-- ─── SIDEBAR ─── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'indexOfAccounts' %}" class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+                <span>MIFFA</span>
+            </a>
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                {% if user.photo %}
+                <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+                {% else %}
+                <div class="avatar-placeholder">
+                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="user-info">
+                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+                <span class="user-role">{{ user.get_role_display }}</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Menu principal</div>
+            <a href="#" class="nav-item active">
+                <i class="fa-solid fa-house"></i>
+                <span>Mon espace</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-users"></i>
+                <span>Membres</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-tree"></i>
+                <span>Arbre généalogique</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-timeline"></i>
+                <span>Chronologie</span>
+            </a>
+
+            <div class="nav-section-label">Communication</div>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-newspaper"></i>
+                <span>Fil d'actualité</span>
+            </a>
+
+            <div class="nav-section-label">Contenu</div>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-images"></i>
+                <span>Médiathèque</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Calendrier</span>
+            </a>
+
+            {% if user.role == 'admin' %}
+            <div class="nav-section-label">Administration</div>
+            <a href="#" class="nav-item">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Administration</span>
+            </a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'deconnexion' %}" class="nav-item logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Déconnexion</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ─── CONTENU PRINCIPAL ─── -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>Mon espace</h1>
+                <p>Bienvenue, {{ user.first_name }} 👋</p>
+            </div>
+            <div class="topbar-right">
+                <div class="notif-btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="notif-badge">3</span>
+                </div>
+            </div>
+        </div>
+        {% if user.role == 'member' %}
+        {% for req in user.join_requests.all %}
+        {% if req.status == 'pending' and not req.relation %}
+        <div class="alert-banner">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            Vous avez rejoint la famille <strong>{{ req.family.name }}</strong> —
+            <a href="#">Définir votre relation avec un membre</a>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+
+        <!-- PROFIL -->
+        <section class="profile-section">
+            <div class="profile-card">
+                <div class="profile-cover"></div>
+                <div class="profile-body">
+                    <div class="profile-avatar">
+                        {% if user.photo %}
+                        <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+                        {% else %}
+                        <div class="avatar-large">
+                            {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                        </div>
+                        {% endif %}
+                        <button class="avatar-edit" onclick="openModal('photoModal')">
+                            <i class="fa-solid fa-camera"></i>
+                        </button>
+                    </div>
+
+                    <div class="profile-info">
+                        <div class="profile-name-row">
+                            <div>
+                                <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                                <span class="profile-username">@{{ user.username }}</span>
+                            </div>
+                            <span class="role-badge role-{{ user.role }}">{{ user.get_role_display }}</span>
+                        </div>
+                        <p class="profile-bio">{{ user.bio|default:"Aucune biographie renseignée." }}</p>
+                    </div>
+
+                    <button class="btn-edit-profile" onclick="openModal('editModal')">
+                        <i class="fa-solid fa-pen"></i> Modifier le profil
+                    </button>
+                </div>
+
+                <!-- DÉTAILS -->
+                <div class="profile-details">
+                    <div class="detail-item">
+                        <i class="fa-solid fa-cake-candles"></i>
+                        <div>
+                            <span class="detail-label">Date de naissance</span>
+                            <span class="detail-value">{% if user.birth_date %}
+                                {{ user.birth_date|date:"d F Y" }}
+                                {% else %}
+                                Non renseignée
+                                {% endif %}</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <div>
+                            <span class="detail-label">Email</span>
+                            <span class="detail-value">{{ user.email|default:"Non renseigné" }}</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <div>
+                            <span class="detail-label">Membre depuis</span>
+                            <span class="detail-value">{{ user.date_joined|date:"F Y" }}</span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <div>
+                            <span class="detail-label">Statut</span>
+                            <span class="detail-value status-active">Actif</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULES -->
+        <section class="modules-section">
+            <h3 class="section-title">
+                <i class="fa-solid fa-grid-2"></i> Accès rapide
+            </h3>
+            <div class="modules-grid">
+
+                <a href="#" class="module-card">
+                    <div class="module-icon green">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="module-info">
+                        <h4>Membres</h4>
+                        <p>Gérer les profils de la famille</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right module-arrow"></i>
+                </a>
+
+                <a href="#" class="module-card">
+                    <div class="module-icon teal">
+                        <i class="fa-solid fa-tree"></i>
+                    </div>
+                    <div class="module-info">
+                        <h4>Arbre généalogique</h4>
+                        <p>Visualiser les liens familiaux</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right module-arrow"></i>
+                </a>
+
+                <a href="#" class="module-card">
+                    <div class="module-icon brown">
+                        <i class="fa-solid fa-timeline"></i>
+                    </div>
+                    <div class="module-info">
+                        <h4>Chronologie</h4>
+                        <p>Histoire et événements familiaux</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right module-arrow"></i>
+                </a>
+
+                <a href="#" class="module-card">
+                    <div class="module-icon blue">
+                        <i class="fa-solid fa-newspaper"></i>
+                    </div>
+                    <div class="module-info">
+                        <h4>Fil d'actualité</h4>
+                        <p>Nouvelles et annonces familiales</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right module-arrow"></i>
+                </a>
+
+                <a href="#" class="module-card">
+                    <div class="module-icon purple">
+                        <i class="fa-solid fa-images"></i>
+                    </div>
+                    <div class="module-info">
+                        <h4>Médiathèque</h4>
+                        <p>Photos, vidéos et documents</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right module-arrow"></i>
+                </a>
+
+                <a href="#" class="module-card">
+                    <div class="module-icon orange">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+                    <div class="module-info">
+                        <h4>Calendrier</h4>
+                        <p>Événements et rappels</p>
+                    </div>
+                    <i class="fa-solid fa-arrow-right module-arrow"></i>
+                </a>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ─── MODAL MODIFIER PROFIL ─── -->
+    <div class="modal-overlay" id="editModal" onclick="closeModal('editModal')">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Modifier le profil</h3>
+                <button onclick="closeModal('editModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form method="POST" action="#" enctype="multipart/form-data" class="modal-form">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Prénom</label>
+                        <input type="text" name="first_name" value="{{ user.first_name }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" name="last_name" value="{{ user.last_name }}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" value="{{ user.email }}">
+                </div>
+                <div class="form-group">
+                    <label>Date de naissance</label>
+                    <input type="date" name="birth_date" value="{{ user.birth_date|date:'Y-m-d' }}">
+                </div>
+                <div class="form-group">
+                    <label>Biographie</label>
+                    <textarea name="bio" rows="3">{{ user.bio }}</textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('editModal')">Annuler</button>
+                    <button type="submit" class="btn-save">
+                        <i class="fa-solid fa-check"></i> Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ─── MODAL PHOTO ─── -->
+    <div class="modal-overlay" id="photoModal" onclick="closeModal('photoModal')">
+        <div class="modal modal-small" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Changer la photo</h3>
+                <button onclick="closeModal('photoModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form method="POST" action="#" enctype="multipart/form-data" class="modal-form">
+                {% csrf_token %}
+                <div class="file-upload">
+                    <input type="file" name="photo" id="photoInput" accept="image/*" onchange="previewPhoto(this)">
+                    <div class="file-upload-label">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span id="photoLabel">Cliquez pour choisir une photo</span>
+                    </div>
+                </div>
+                <div id="photoPreview" class="photo-preview" style="display:none">
+                    <img id="previewImg" src="" alt="Aperçu">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('photoModal')">Annuler</button>
+                    <button type="submit" class="btn-save">
+                        <i class="fa-solid fa-check"></i> Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.querySelector('.main-content').classList.toggle('expanded');
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function previewPhoto(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('photoPreview').style.display = 'block';
+                    document.getElementById('photoLabel').textContent = input.files[0].name;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
+</body>
+
+</html>
