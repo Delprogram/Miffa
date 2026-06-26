@@ -1,0 +1,360 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIFFA — Administration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'global.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/admin.css' %}">
+</head>
+
+<body>
+
+    <!-- ─── SIDEBAR ─── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'indexOfAccounts' %}" class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+                <span>MIFFA</span>
+            </a>
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                {% if user.photo %}
+                <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+                {% else %}
+                <div class="avatar-placeholder">
+                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="user-info">
+                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+                <span class="user-role">{{ user.get_role_display }}</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Menu principal</div>
+            <a href="{% url 'dashboard' %}" class="nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span>Mon espace</span>
+            </a>
+            <a href="{% url 'members_list' %}" class="nav-item">
+                <i class="fa-solid fa-users"></i>
+                <span>Membres</span>
+            </a>
+            <a href="{% url 'add_relation' %}" class="nav-item">
+                <i class="fa-solid fa-link"></i>
+                <span>Mes relations</span>
+                {% if pending_relation_count %}
+                <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+                    {{ pending_relation_count }}
+                </span>
+                {% endif %}
+            </a>
+            <a href="{% url 'family_tree' %}" class="nav-item">
+                <i class="fa-solid fa-tree"></i>
+                <span>Arbre généalogique</span>
+            </a>
+            <a href="{% url 'timeline_view' %}" class="nav-item">
+                <i class="fa-solid fa-timeline"></i>
+                <span>Chronologie</span>
+            </a>
+
+            <div class="nav-section-label">Communication</div>
+            <a href="{% url 'news_feed' %}" class="nav-item">
+                <i class="fa-solid fa-newspaper"></i>
+                <span>Fil d'actualité</span>
+            </a>
+
+            <div class="nav-section-label">Contenu</div>
+            <a href="{% url 'media_library' %}" class="nav-item">
+                <i class="fa-solid fa-images"></i>
+                <span>Médiathèque</span>
+            </a>
+            <a href="{% url 'calendar_view' %}" class="nav-item">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Calendrier</span>
+            </a>
+            <a href="{% url 'notifications' %}" class="nav-item">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+                {% if unread_notif_count %}
+                <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+                    {{ unread_notif_count }}
+                </span>
+                {% endif %}
+            </a>
+
+            {% if user.role == 'admin' %}
+            <div class="nav-section-label">Administration</div>
+            <a href="{% url 'admin_panel' %}" class="nav-item active">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Administration</span>
+            </a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'deconnexion' %}" class="nav-item logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Déconnexion</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ─── CONTENU PRINCIPAL ─── -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>Administration</h1>
+                <p>Gérez votre famille <strong>{{ user.family.name }}</strong></p>
+            </div>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert-banner alert-{{ message.tags }}">
+            <i class="fa-solid fa-circle-info"></i> {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <!-- ─── STATS RAPIDES ─── -->
+        <section class="admin-stats">
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="fa-solid fa-users"></i></div>
+                <div>
+                    <span class="stat-number">{{ members.count }}</span>
+                    <span class="stat-label">Membres actifs</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange"><i class="fa-solid fa-clock"></i></div>
+                <div>
+                    <span class="stat-number">{{ pending_requests.count }}</span>
+                    <span class="stat-label">Demandes en attente</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="fa-solid fa-link"></i></div>
+                <div>
+                    <span class="stat-number">{{ user.family.code }}</span>
+                    <span class="stat-label">Code de la famille</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── DEMANDES D'ADHÉSION ─── -->
+        <section class="admin-section">
+            <h3 class="section-title">
+                <i class="fa-solid fa-user-clock"></i> Demandes d'adhésion en attente
+            </h3>
+
+            {% if pending_requests %}
+            <div class="request-list">
+                {% for req in pending_requests %}
+                <div class="request-card">
+                    <div class="request-avatar">
+                        {% if req.user.photo %}
+                        <img src="{{ req.user.photo.url }}" alt="{{ req.user.first_name }}">
+                        {% else %}
+                        <div class="avatar-placeholder">
+                            {{ req.user.first_name|first|upper }}{{ req.user.last_name|first|upper }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="request-info">
+                        <h4>{{ req.user.first_name }} {{ req.user.last_name }}</h4>
+                        <span class="request-username">@{{ req.user.username }}</span>
+                        <span class="request-date">Demande envoyée le {{ req.created_at|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="request-actions">
+                        <form method="POST" action="{% url 'approve_join_request' req.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-approve">
+                                <i class="fa-solid fa-check"></i> Approuver
+                            </button>
+                        </form>
+                        <form method="POST" action="{% url 'reject_join_request' req.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-reject">
+                                <i class="fa-solid fa-xmark"></i> Refuser
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fa-solid fa-inbox"></i>
+                <p>Aucune demande d'adhésion en attente.</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- ─── MEMBRES DE LA FAMILLE ─── -->
+        <section class="admin-section">
+            <h3 class="section-title">
+                <i class="fa-solid fa-users"></i> Membres de la famille
+            </h3>
+
+            {% if members %}
+            <div class="member-table">
+                <div class="member-table-header">
+                    <span>Membre</span>
+                    <span>Rôle</span>
+                    <span>Relation</span>
+                    <span>Membre depuis</span>
+                    <span>Action</span>
+                </div>
+                {% for member in members %}
+                <div class="member-row">
+                    <div class="member-cell member-identity">
+                        {% if member.photo %}
+                        <img src="{{ member.photo.url }}" alt="{{ member.first_name }}" class="member-avatar-sm">
+                        {% else %}
+                        <div class="avatar-placeholder avatar-placeholder-sm">
+                            {{ member.first_name|first|upper }}{{ member.last_name|first|upper }}
+                        </div>
+                        {% endif %}
+                        <span>{{ member.first_name }} {{ member.last_name }}</span>
+                    </div>
+                    <span class="member-cell">
+                        <span class="role-badge role-{{ member.role }}">{{ member.get_role_display }}</span>
+                    </span>
+                    <span class="member-cell">{{ member.relation_to_family|default:"Non définie" }}</span>
+                    <span class="member-cell">{{ member.date_joined|date:"d/m/Y" }}</span>
+                    <span class="member-cell">
+                        {% if member != user %}
+                        <form method="POST" action="{% url 'remove_member' member.id %}"
+                            onsubmit="return confirm('Retirer {{ member.first_name }} de la famille ?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-remove">
+                                <i class="fa-solid fa-user-minus"></i>
+                            </button>
+                        </form>
+                        {% else %}
+                        <span class="you-label">Vous</span>
+                        {% endif %}
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fa-solid fa-user-group"></i>
+                <p>Aucun membre dans la famille pour le moment.</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- ─── PARAMÈTRES DE LA FAMILLE ─── -->
+        <section class="admin-section">
+            <h3 class="section-title">
+                <i class="fa-solid fa-gear"></i> Paramètres de la famille
+            </h3>
+
+            <div class="settings-card">
+                <form method="POST" action="{% url 'edit_family' %}" class="settings-form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nom de la famille</label>
+                            <input type="text" name="family_name" value="{{ user.family.name }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Code d'identification</label>
+                            <input type="text" name="family_code" value="{{ user.family.code }}" maxlength="10"
+                                style="text-transform:uppercase">
+                        </div>
+                    </div>
+                    <p class="settings-note">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Ce code permet aux nouveaux membres de retrouver votre famille lors de leur inscription.
+                    </p>
+                    <button type="submit" class="btn-save">
+                        <i class="fa-solid fa-check"></i> Enregistrer les modifications
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ─── ZONE DANGEREUSE ─── -->
+        <section class="admin-section">
+            <h3 class="section-title danger">
+                <i class="fa-solid fa-triangle-exclamation"></i> Zone sensible
+            </h3>
+            <div class="danger-card">
+                <div>
+                    <h4>Supprimer la famille</h4>
+                    <p>Cette action est irréversible. Tous les membres perdront leur accès à l'espace familial.</p>
+                </div>
+                <button class="btn-danger" onclick="openModal('deleteFamilyModal')">
+                    <i class="fa-solid fa-trash"></i> Supprimer
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ─── MODAL SUPPRESSION FAMILLE ─── -->
+    <div class="modal-overlay" id="deleteFamilyModal" onclick="closeModal('deleteFamilyModal')">
+        <div class="modal modal-small" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Supprimer la famille</h3>
+                <button onclick="closeModal('deleteFamilyModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-form">
+                <p class="confirm-text">
+                    Êtes-vous sûr de vouloir supprimer définitivement <strong>{{ user.family.name }}</strong> ?
+                    Cette action ne peut pas être annulée.
+                </p>
+                <form method="POST" action="#">
+                    {% csrf_token %}
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel"
+                            onclick="closeModal('deleteFamilyModal')">Annuler</button>
+                        <button type="submit" class="btn-danger">
+                            <i class="fa-solid fa-trash"></i> Confirmer la suppression
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.querySelector('.main-content').classList.toggle('expanded');
+        }
+        function openModal(id) {
+            document.getElementById(id).classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    </script>
+
+</body>
+
+</html>

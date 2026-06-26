@@ -1,0 +1,226 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIFFA — Membres de la famille</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'global.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/members.css' %}">
+</head>
+
+<body>
+
+    <!-- ─── SIDEBAR ─── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'indexOfAccounts' %}" class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+                <span>MIFFA</span>
+            </a>
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                {% if user.photo %}
+                <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+                {% else %}
+                <div class="avatar-placeholder">
+                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="user-info">
+                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+                <span class="user-role">{{ user.get_role_display }}</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Menu principal</div>
+            <a href="{% url 'dashboard' %}" class="nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span>Mon espace</span>
+            </a>
+            <a href="{% url 'members_list' %}" class="nav-item active">
+                <i class="fa-solid fa-users"></i>
+                <span>Membres</span>
+            </a>
+            <a href="{% url 'add_relation' %}" class="nav-item">
+        <i class="fa-solid fa-link"></i>
+        <span>Mes relations</span>
+        {% if pending_relation_count %}
+        <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+            {{ pending_relation_count }}
+        </span>
+        {% endif %}
+    </a>
+            <a href="{% url 'family_tree' %}" class="nav-item">
+                <i class="fa-solid fa-tree"></i>
+                <span>Arbre généalogique</span>
+            </a>
+            <a href="{% url 'timeline_view' %}" class="nav-item">
+                <i class="fa-solid fa-timeline"></i>
+                <span>Chronologie</span>
+            </a>
+
+            <div class="nav-section-label">Communication</div>
+            <a href="{% url 'news_feed' %}" class="nav-item">
+                <i class="fa-solid fa-newspaper"></i>
+                <span>Fil d'actualité</span>
+            </a>
+
+            <div class="nav-section-label">Contenu</div>
+            <a href="{% url 'media_library' %}" class="nav-item">
+                <i class="fa-solid fa-images"></i>
+                <span>Médiathèque</span>
+            </a>
+            <a href="{% url 'calendar_view' %}" class="nav-item">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Calendrier</span>
+            </a>
+            <a href="{% url 'notifications' %}" class="nav-item">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+                {% if unread_notif_count %}
+                <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+                    {{ unread_notif_count }}
+                </span>
+                {% endif %}
+            </a>
+
+            {% if user.role == 'admin' %}
+            <div class="nav-section-label">Administration</div>
+            <a href="{% url 'admin_panel' %}" class="nav-item">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Administration</span>
+            </a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'deconnexion' %}" class="nav-item logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Déconnexion</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ─── CONTENU PRINCIPAL ─── -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>Membres de la famille</h1>
+                <p>{{ members.count }} membre{{ members.count|pluralize }} dans <strong>{{ user.family.name }}</strong></p>
+            </div>
+        </div>
+
+        <!-- RECHERCHE & FILTRES -->
+        <div class="members-toolbar">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="memberSearch" placeholder="Rechercher un membre..." oninput="filterMembers()">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">Tous</button>
+                <button class="filter-btn" data-filter="admin" onclick="setFilter('admin', this)">Admins</button>
+                <button class="filter-btn" data-filter="member" onclick="setFilter('member', this)">Membres</button>
+            </div>
+        </div>
+
+        <!-- GRILLE DES MEMBRES -->
+        {% if members %}
+        <div class="members-grid" id="membersGrid">
+            {% for member in members %}
+            <a href="{% url 'member_profile' member.id %}" class="member-card" data-role="{{ member.role }}"
+                data-name="{{ member.first_name|lower }} {{ member.last_name|lower }}">
+                <div class="member-card-cover"></div>
+                <div class="member-card-avatar">
+                    {% if member.photo %}
+                        <img src="{{ member.photo.url }}" alt="{{ member.first_name }}">
+                    {% else %}
+                        <div class="avatar-large-card">
+                            {{ member.first_name|first|upper }}{{ member.last_name|first|upper }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="member-card-body">
+                    <h3>{{ member.first_name }} {{ member.last_name }}</h3>
+                    <span class="role-badge role-{{ member.role }}">{{ member.get_role_display }}</span>
+                    {% if member.relation_to_family %}
+                        <p class="member-relation">
+                            <i class="fa-solid fa-link"></i> {{ member.relation_to_family }}
+                        </p>
+                    {% endif %}
+                    {% if member.bio %}
+                        <p class="member-bio-preview">{{ member.bio|truncatechars:60 }}</p>
+                    {% endif %}
+                </div>
+                <div class="member-card-footer">
+                    <span><i class="fa-solid fa-cake-candles"></i>
+                        {% if member.birth_date %}{{ member.birth_date|date:"d M Y" }}{% else %}—{% endif %}
+                    </span>
+                    <span class="view-profile">Voir le profil <i class="fa-solid fa-arrow-right"></i></span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        <p class="no-results" id="noResults" style="display:none">
+            <i class="fa-solid fa-user-slash"></i> Aucun membre ne correspond à votre recherche.
+        </p>
+        {% else %}
+        <div class="empty-state">
+            <i class="fa-solid fa-user-group"></i>
+            <p>Aucun membre dans la famille pour le moment.</p>
+        </div>
+        {% endif %}
+
+    </main>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.querySelector('.main-content').classList.toggle('expanded');
+        }
+
+        let currentFilter = 'all';
+
+        function setFilter(filter, btn) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterMembers();
+        }
+
+        function filterMembers() {
+            const query = document.getElementById('memberSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.member-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const matchesSearch = card.dataset.name.includes(query);
+                const matchesFilter = currentFilter === 'all' || card.dataset.role === currentFilter;
+                const visible = matchesSearch && matchesFilter;
+                card.style.display = visible ? 'flex' : 'none';
+                if (visible) visibleCount++;
+            });
+
+            document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+    </script>
+
+</body>
+
+</html>

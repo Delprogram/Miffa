@@ -1,0 +1,252 @@
+/* ─── FILTRES ─── */
+.timeline-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.timeline-filters .filter-btn {
+    padding: 9px 16px;
+    border-radius: 9px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    color: var(--text-mid);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.timeline-filters .filter-btn:hover { border-color: var(--green-mid); color: var(--green-mid); }
+.timeline-filters .filter-btn.active { background: var(--green-mid); border-color: var(--green-mid); color: white; }
+
+/* ─── TIMELINE WRAPPER ─── */
+.timeline-wrapper {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 10px 0 40px;
+}
+
+.timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--green-light), var(--green-mid), var(--green-light));
+    transform: translateX(-50%);
+    border-radius: 4px;
+}
+
+/* ─── YEAR GROUP ─── */
+.timeline-year-group { position: relative; margin-bottom: 8px; }
+
+.timeline-year-marker {
+    display: flex;
+    justify-content: center;
+    margin: 36px 0 28px;
+    position: relative;
+    z-index: 2;
+}
+
+.timeline-year-marker span {
+    background: var(--green-deep);
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 8px 24px;
+    border-radius: 24px;
+    box-shadow: 0 4px 16px rgba(26,61,43,0.25);
+}
+
+/* ─── ENTRY ─── */
+.timeline-entry {
+    position: relative;
+    display: flex;
+    width: 50%;
+    margin-bottom: 24px;
+}
+
+.timeline-entry-left { left: 0; padding-right: 40px; justify-content: flex-end; }
+.timeline-entry-right { left: 50%; padding-left: 40px; }
+
+.timeline-dot {
+    position: absolute;
+    top: 14px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--green-mid);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    z-index: 2;
+    box-shadow: 0 0 0 5px var(--green-pale), 0 4px 10px rgba(26,61,43,0.2);
+}
+
+.timeline-entry-left .timeline-dot { right: -18px; }
+.timeline-entry-right .timeline-dot { left: -18px; }
+
+.timeline-dot-naissance { background: #e65100; }
+.timeline-dot-mariage { background: #c2185b; }
+.timeline-dot-diplome { background: #1565c0; }
+.timeline-dot-demenagement { background: #6d4c41; }
+.timeline-dot-deces { background: #616161; }
+.timeline-dot-autre { background: var(--green-mid); }
+
+/* ─── CARD ─── */
+.timeline-card {
+    background: var(--white);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    padding: 16px 18px;
+    max-width: 380px;
+    width: 100%;
+    transition: transform 0.2s;
+}
+
+.timeline-card:hover { transform: translateY(-2px); }
+
+.timeline-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.timeline-avatar, .timeline-avatar-placeholder {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+}
+
+.timeline-avatar-placeholder {
+    background: var(--green-mid);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+}
+
+.timeline-card-header h4 { font-size: 14.5px; color: var(--text-dark); margin-bottom: 2px; }
+.timeline-date { font-size: 12px; color: var(--green-mid); }
+
+.timeline-delete-form { margin-left: auto; }
+.timeline-delete-form button {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 4px;
+    transition: color 0.2s;
+}
+.timeline-delete-form button:hover { color: var(--red); }
+
+.timeline-description {
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.6;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+    .timeline-line { left: 18px; }
+    .timeline-entry, .timeline-entry-left, .timeline-entry-right {
+        width: 100%;
+        left: 0;
+        padding-left: 48px;
+        padding-right: 0;
+        justify-content: flex-start;
+    }
+    .timeline-entry-left .timeline-dot,
+    .timeline-entry-right .timeline-dot { left: 0; right: auto; }
+    .timeline-card { max-width: 100%; }
+}
+
+/* ─── SELECT (fallback si manquant ailleurs) ─── */
+select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    outline: none;
+    background: var(--green-pale);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%233d5a42'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+    padding-right: 36px;
+}
+
+select:focus {
+    border-color: var(--green-mid);
+    background-color: var(--white);
+    box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+}
+
+select option {
+    color: var(--text-dark);
+    background: var(--white);
+}
+
+.btn-new-event {
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(46,125,50,0.25);
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+
+
+.btn-submit {
+    padding: 11px 22px;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.btn-new-event:hover,
+.btn-submit:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 22px rgba(46,125,50,0.35);
+}

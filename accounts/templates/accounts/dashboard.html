@@ -51,38 +51,56 @@
                 <i class="fa-solid fa-house"></i>
                 <span>Mon espace</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="{% url 'members_list' %}" class="nav-item">
                 <i class="fa-solid fa-users"></i>
                 <span>Membres</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="{% url 'add_relation' %}" class="nav-item">
+                <i class="fa-solid fa-link"></i>
+                <span>Mes relations</span>
+                {% if pending_relation_count %}
+                <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+                    {{ pending_relation_count }}
+                </span>
+                {% endif %}
+            </a>
+            <a href="{% url 'family_tree' %}" class="nav-item">
                 <i class="fa-solid fa-tree"></i>
                 <span>Arbre généalogique</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="{% url 'timeline_view' %}" class="nav-item">
                 <i class="fa-solid fa-timeline"></i>
                 <span>Chronologie</span>
             </a>
 
             <div class="nav-section-label">Communication</div>
-            <a href="#" class="nav-item">
+            <a href="{% url 'news_feed' %}" class="nav-item">
                 <i class="fa-solid fa-newspaper"></i>
                 <span>Fil d'actualité</span>
             </a>
 
             <div class="nav-section-label">Contenu</div>
-            <a href="#" class="nav-item">
+            <a href="{% url 'media_library' %}" class="nav-item">
                 <i class="fa-solid fa-images"></i>
                 <span>Médiathèque</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="{% url 'calendar_view' %}" class="nav-item">
                 <i class="fa-solid fa-calendar-days"></i>
                 <span>Calendrier</span>
+            </a>
+            <a href="{% url 'notifications' %}" class="nav-item">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+                {% if unread_notif_count %}
+                <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+                    {{ unread_notif_count }}
+                </span>
+                {% endif %}
             </a>
 
             {% if user.role == 'admin' %}
             <div class="nav-section-label">Administration</div>
-            <a href="#" class="nav-item">
+            <a href="{% url 'admin_panel' %}" class="nav-item">
                 <i class="fa-solid fa-shield-halved"></i>
                 <span>Administration</span>
             </a>
@@ -104,22 +122,32 @@
         <div class="topbar">
             <div class="topbar-left">
                 <h1>Mon espace</h1>
-                <p>Bienvenue, {{ user.first_name }} 👋</p>
             </div>
+
+            <!-- ← REMPLACE CE BLOC -->
             <div class="topbar-right">
-                <div class="notif-btn">
+                <a href="{% url 'notifications' %}" class="notif-btn" style="text-decoration:none;color:inherit;">
                     <i class="fa-solid fa-bell"></i>
-                    <span class="notif-badge">3</span>
-                </div>
+                    {% if unread_notif_count %}
+                    <span class="notif-badge">{{ unread_notif_count }}</span>
+                    {% endif %}
+                </a>
             </div>
+
         </div>
+        {% if messages %}
+        {% for message in messages %}
+        <div data-message="{{ message }}" data-tags="{{ message.tags }}" class="django-message" style="display:none;">
+        </div>
+        {% endfor %}
+        {% endif %}
         {% if user.role == 'member' %}
         {% for req in user.join_requests.all %}
         {% if req.status == 'pending' and not req.relation %}
         <div class="alert-banner">
             <i class="fa-solid fa-triangle-exclamation"></i>
             Vous avez rejoint la famille <strong>{{ req.family.name }}</strong> —
-            <a href="#">Définir votre relation avec un membre</a>
+            <a href="{% url 'add_relation' %}">Définir votre relation avec un membre</a>
         </div>
         {% endif %}
         {% endfor %}
@@ -128,7 +156,21 @@
         <!-- PROFIL -->
         <section class="profile-section">
             <div class="profile-card">
-                <div class="profile-cover"></div>
+
+                <!-- BANNIÈRE -->
+                <div class="profile-cover-wrapper">
+                    {% if user.family.banner %}
+                    <img src="{{ user.family.banner.url }}" alt="Bannière" class="profile-cover-img">
+                    {% else %}
+                    <div class="profile-cover"></div>
+                    {% endif %}
+
+                    {% if user.role == 'admin' %}
+                    <button class="banner-edit-btn" onclick="openModal('bannerModal')">
+                        <i class="fa-solid fa-camera"></i> Modifier la bannière
+                    </button>
+                    {% endif %}
+                </div>
                 <div class="profile-body">
                     <div class="profile-avatar">
                         {% if user.photo %}
@@ -151,7 +193,7 @@
                             </div>
                             <span class="role-badge role-{{ user.role }}">{{ user.get_role_display }}</span>
                         </div>
-                        <p class="profile-bio">{{ user.bio|default:"Aucune biographie renseignée." }}</p>
+                        <p class="profile-bio">{{ user.bio|default:"" }}</p>
                     </div>
 
                     <button class="btn-edit-profile" onclick="openModal('editModal')">
@@ -204,7 +246,7 @@
             </h3>
             <div class="modules-grid">
 
-                <a href="#" class="module-card">
+                <a href="{% url 'members_list' %}" class="module-card">
                     <div class="module-icon green">
                         <i class="fa-solid fa-users"></i>
                     </div>
@@ -215,7 +257,7 @@
                     <i class="fa-solid fa-arrow-right module-arrow"></i>
                 </a>
 
-                <a href="#" class="module-card">
+                <a href="{% url 'family_tree' %}" class="module-card">
                     <div class="module-icon teal">
                         <i class="fa-solid fa-tree"></i>
                     </div>
@@ -226,7 +268,7 @@
                     <i class="fa-solid fa-arrow-right module-arrow"></i>
                 </a>
 
-                <a href="#" class="module-card">
+                <a href="{% url 'timeline_view' %}" class="module-card">
                     <div class="module-icon brown">
                         <i class="fa-solid fa-timeline"></i>
                     </div>
@@ -237,7 +279,7 @@
                     <i class="fa-solid fa-arrow-right module-arrow"></i>
                 </a>
 
-                <a href="#" class="module-card">
+                <a href="{% url 'news_feed' %}" class="module-card">
                     <div class="module-icon blue">
                         <i class="fa-solid fa-newspaper"></i>
                     </div>
@@ -248,7 +290,7 @@
                     <i class="fa-solid fa-arrow-right module-arrow"></i>
                 </a>
 
-                <a href="#" class="module-card">
+                <a href="{% url 'media_library' %}" class="module-card">
                     <div class="module-icon purple">
                         <i class="fa-solid fa-images"></i>
                     </div>
@@ -259,7 +301,7 @@
                     <i class="fa-solid fa-arrow-right module-arrow"></i>
                 </a>
 
-                <a href="#" class="module-card">
+                <a href="{% url 'calendar_view' %}" class="module-card">
                     <div class="module-icon orange">
                         <i class="fa-solid fa-calendar-days"></i>
                     </div>
@@ -282,8 +324,21 @@
                 <h3>Modifier le profil</h3>
                 <button onclick="closeModal('editModal')"><i class="fa-solid fa-xmark"></i></button>
             </div>
+            <div class="profile-avatar profile-avatar1">
+                {% if user.photo %}
+                <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+                {% else %}
+                <div class="avatar-large">
+                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                </div>
+                {% endif %}
+                <button class="avatar-edit avatar-edit1" onclick="openModal('photoModal')">
+                    <i class="fa-solid fa-camera"></i>
+                </button>
+            </div>
             <form method="POST" action="#" enctype="multipart/form-data" class="modal-form">
                 {% csrf_token %}
+
                 <div class="form-row">
                     <div class="form-group">
                         <label>Prénom</label>
@@ -298,6 +353,12 @@
                     <label>Email</label>
                     <input type="email" name="email" value="{{ user.email }}">
                 </div>
+                <!-- {% if user.role == 'admin' %}
+                <div class="form-group">
+                    <label>Code d'identification de la famille</label>
+                    <input type="text" name="code" value="{{ user.family.code }}">
+                </div>
+                {% endif %} -->
                 <div class="form-group">
                     <label>Date de naissance</label>
                     <input type="date" name="birth_date" value="{{ user.birth_date|date:'Y-m-d' }}">
@@ -345,7 +406,69 @@
         </div>
     </div>
 
+    <!-- ─── MODAL BANNIÈRE ─── -->
+    <div class="modal-overlay" id="bannerModal" onclick="closeModal('bannerModal')">
+        <div class="modal modal-small" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Modifier la bannière</h3>
+                <button onclick="closeModal('bannerModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form method="POST" action="{% url 'dashboard' %}" enctype="multipart/form-data" class="modal-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_banner">
+                <div class="file-upload">
+                    <input type="file" name="banner" id="bannerInput" accept="image/*" onchange="previewBanner(this)">
+                    <div class="file-upload-label">
+                        <i class="fa-solid fa-image"></i>
+                        <span id="bannerLabel">Cliquez pour choisir une image</span>
+                    </div>
+                </div>
+                <div id="bannerPreview" class="banner-preview" style="display:none">
+                    <img id="bannerPreviewImg" src="" alt="Aperçu">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('bannerModal')">Annuler</button>
+                    <button type="submit" class="btn-save">
+                        <i class="fa-solid fa-check"></i> Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- ─── MODAL AVERTISSEMENT FAMILLE ─── -->
+    <div class="modal-overlay" id="familyWarningModal" onclick="closeModal('familyWarningModal')">
+        <div class="modal modal-small" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-triangle-exclamation" style="color:#f9a825;margin-right:8px;"></i> Accès
+                    restreint</h3>
+                <button onclick="closeModal('familyWarningModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-form">
+                <p style="color:var(--text-mid);font-size:14px;line-height:1.6;margin-bottom:20px;" id="warningMessage">
+                </p>
+                <div class="modal-actions" style="justify-content:space-between;">
+                    <button class="btn-cancel" onclick="closeModal('familyWarningModal')">
+                        Fermer
+                    </button>
+                    <a href="{% url 'add_relation' %}" class="btn-save" style="text-decoration:none;">
+                        <i class="fa-solid fa-link"></i> Définir mes relations
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
+        function previewBanner(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('bannerPreviewImg').src = e.target.result;
+                    document.getElementById('bannerPreview').style.display = 'block';
+                    document.getElementById('bannerLabel').textContent = input.files[0].name;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('collapsed');
             document.querySelector('.main-content').classList.toggle('expanded');
@@ -372,6 +495,16 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        // Affiche les messages Django en popup
+        document.addEventListener('DOMContentLoaded', function () {
+            const msgs = document.querySelectorAll('.django-message');
+            if (msgs.length > 0) {
+                const msg = msgs[0];
+                document.getElementById('warningMessage').textContent = msg.dataset.message;
+                openModal('familyWarningModal');
+            }
+        });
     </script>
 
 </body>

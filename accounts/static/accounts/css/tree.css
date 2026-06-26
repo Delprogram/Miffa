@@ -1,0 +1,197 @@
+/* ─── TOPBAR EXTRA ─── */
+.tree-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.tree-btn {
+    width: 40px; height: 40px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    color: var(--green-mid);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--shadow);
+}
+
+.tree-btn:hover { background: var(--green-mid); color: white; border-color: var(--green-mid); }
+
+/* ─── LÉGENDE ─── */
+.tree-legend {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text-mid);
+    flex-wrap: wrap;
+}
+
+.tree-legend span { display: flex; align-items: center; gap: 6px; }
+.tree-legend i { font-size: 9px; }
+
+/* ─── GENERATION BAR ─── */
+.generation-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.generation-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    font-size: 13px;
+    color: var(--text-mid);
+    box-shadow: var(--shadow);
+}
+
+.generation-chip i { font-size: 11px; color: var(--text-light); }
+
+.generation-chip-self {
+    border-color: var(--green-mid);
+    background: var(--green-light);
+    color: var(--green-deep);
+}
+.generation-chip-self i { color: var(--green-mid); }
+
+.generation-chip-ascendant {
+    border-color: #c9b59c;
+    background: #f7f1ea;
+    color: #6d4c33;
+}
+.generation-chip-ascendant i { color: #8d6748; }
+
+.generation-chip-descendant {
+    border-color: #a5d6a7;
+    background: #edf8ee;
+    color: #2e7d32;
+}
+.generation-chip-descendant i { color: var(--green-soft); }
+
+.generation-count {
+    background: rgba(0,0,0,0.08);
+    border-radius: 20px;
+    padding: 1px 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+/* ─── VIEWPORT ─── */
+.tree-main { padding-bottom: 0; }
+
+.tree-viewport {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 230px);
+    min-height: 480px;
+    background:
+        radial-gradient(circle, rgba(46,125,50,0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-color: var(--white);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    cursor: grab;
+}
+
+.tree-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    transform-origin: 0 0;
+    transition: transform 0.05s linear;
+}
+
+#treeSvg {
+    position: absolute;
+    top: 0; left: 0;
+    overflow: visible;
+    pointer-events: none;
+}
+
+/* ─── LIENS ─── */
+.tree-link {
+    stroke: #c8ddc9;
+    stroke-width: 2;
+}
+
+.tree-link-self { stroke: var(--green-mid); stroke-width: 2.5; }
+.tree-link-ascendant { stroke: #c9b59c; }
+.tree-link-descendant { stroke: var(--green-soft); }
+
+/* ─── NŒUDS ─── */
+.tree-node {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 96px;
+    transform: translate(-50%, -50%);
+    text-decoration: none;
+    z-index: 2;
+    transition: transform 0.2s;
+}
+
+.tree-node:hover {
+    transform: translate(-50%, -50%) scale(1.08);
+    z-index: 5;
+}
+
+.tree-node-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 4px 14px rgba(26,61,43,0.18);
+    overflow: hidden;
+    background: var(--green-mid);
+}
+
+.tree-node-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.tree-avatar-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+}
+
+.tree-node-self .tree-node-avatar { border-color: var(--green-mid); box-shadow: 0 0 0 3px rgba(46,125,50,0.25); }
+.tree-node-ascendant .tree-node-avatar { background: #8d6748; }
+.tree-node-descendant .tree-node-avatar { background: #4caf50; }
+
+.tree-node-name {
+    margin-top: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-dark);
+    background: white;
+    padding: 1px 8px;
+    border-radius: 8px;
+}
+
+.tree-node-relation {
+    font-size: 10.5px;
+    color: var(--text-light);
+    margin-top: 1px;
+}
+
+/* ─── EMPTY STATE ─── */
+.tree-empty {
+    padding: 70px 20px;
+}
+
+.tree-empty i { font-size: 36px; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+    .tree-viewport { height: calc(100vh - 280px); }
+}

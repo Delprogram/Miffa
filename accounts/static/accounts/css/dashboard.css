@@ -240,6 +240,10 @@ body {
     border: 1px solid var(--border);
 }
 
+profile-card > img {
+    height: 120px;
+}
+
 .profile-cover {
     height: 120px;
     background: linear-gradient(135deg, var(--green-deep), #2d6a35, var(--green-soft));
@@ -258,6 +262,13 @@ body {
     position: relative;
     margin-top: -44px;
     flex-shrink: 0;
+}
+
+.profile-avatar1 {
+    margin-top: 0px;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
 }
 
 .profile-avatar img,
@@ -289,6 +300,10 @@ body {
     font-size: 11px;
     cursor: pointer;
     transition: background 0.2s;
+}
+
+.avatar-edit1 {
+    left: 52%;
 }
 
 .avatar-edit:hover { background: var(--green-deep); }
@@ -665,3 +680,80 @@ textarea { resize: vertical; }
 .alert-banner i { color: #f9a825; }
 .alert-banner a { color: var(--green-mid); font-weight: 600; text-decoration: none; }
 .alert-banner a:hover { text-decoration: underline; }
+
+/* ─── MODAL SCROLLABLE ─── */
+.modal {
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-form {
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* Scrollbar stylisée */
+.modal::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal::-webkit-scrollbar-track {
+    background: var(--green-pale);
+    border-radius: 10px;
+}
+
+.modal::-webkit-scrollbar-thumb {
+    background: var(--green-mid);
+    border-radius: 10px;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+    background: var(--green-deep);
+}
+
+.profile-cover-wrapper {
+    position: relative;
+    height: 120px;
+    overflow: hidden;
+}
+
+.profile-cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.banner-edit-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 14px;
+    background: rgba(0,0,0,0.45);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.banner-edit-btn:hover { background: rgba(0,0,0,0.65); }
+
+.banner-preview {
+    margin-top: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    max-height: 140px;
+}
+
+.banner-preview img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}

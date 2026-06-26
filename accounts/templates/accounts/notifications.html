@@ -1,0 +1,193 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIFFA — Notifications</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'global.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/notifications.css' %}">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="{% url 'indexOfAccounts' %}" class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+            <span>MIFFA</span>
+        </a>
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            {% if user.photo %}
+            <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+            {% else %}
+            <div class="avatar-placeholder">
+                {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="user-info">
+            <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+            <span class="user-role">{{ user.get_role_display }}</span>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Menu principal</div>
+        <a href="{% url 'dashboard' %}" class="nav-item">
+            <i class="fa-solid fa-house"></i><span>Mon espace</span>
+        </a>
+        <a href="{% url 'members_list' %}" class="nav-item">
+            <i class="fa-solid fa-users"></i><span>Membres</span>
+        </a>
+        <a href="{% url 'add_relation' %}" class="nav-item">
+            <i class="fa-solid fa-link"></i>
+            <span>Mes relations</span>
+            {% if pending_relation_count %}
+            <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+                {{ pending_relation_count }}
+            </span>
+            {% endif %}
+        </a>
+        <a href="{% url 'family_tree' %}" class="nav-item">
+            <i class="fa-solid fa-tree"></i><span>Arbre généalogique</span>
+        </a>
+        <a href="{% url 'timeline_view' %}" class="nav-item">
+            <i class="fa-solid fa-timeline"></i><span>Chronologie</span>
+        </a>
+
+        <div class="nav-section-label">Communication</div>
+        <a href="{% url 'news_feed' %}" class="nav-item">
+            <i class="fa-solid fa-newspaper"></i><span>Fil d'actualité</span>
+        </a>
+
+        <div class="nav-section-label">Contenu</div>
+        <a href="{% url 'media_library' %}" class="nav-item">
+            <i class="fa-solid fa-images"></i><span>Médiathèque</span>
+        </a>
+        <a href="{% url 'calendar_view' %}" class="nav-item">
+            <i class="fa-solid fa-calendar-days"></i><span>Calendrier</span>
+        </a>
+        <a href="{% url 'notifications' %}" class="nav-item active">
+            <i class="fa-solid fa-bell"></i>
+            <span>Notifications</span>
+            {% if unread_notif_count %}
+            <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+                {{ unread_notif_count }}
+            </span>
+            {% endif %}
+        </a>
+
+        {% if user.role == 'admin' %}
+        <div class="nav-section-label">Administration</div>
+        <a href="{% url 'admin_panel' %}" class="nav-item">
+            <i class="fa-solid fa-shield-halved"></i><span>Administration</span>
+        </a>
+        {% endif %}
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="{% url 'deconnexion' %}" class="nav-item logout">
+            <i class="fa-solid fa-right-from-bracket"></i><span>Déconnexion</span>
+        </a>
+    </div>
+</aside>
+
+<!-- CONTENU -->
+<main class="main-content">
+
+    <div class="notif-topbar">
+        <div>
+            <h1><i class="fa-solid fa-bell"></i> Notifications</h1>
+            <p>Toutes vos alertes et mises à jour</p>
+        </div>
+        <div class="topbar-right">
+            <a href="{% url 'notifications' %}" class="notif-btn" style="text-decoration:none;color:inherit;">
+                <i class="fa-solid fa-bell"></i>
+                {% if unread_notif_count %}
+                <span class="notif-badge">{{ unread_notif_count }}</span>
+                {% endif %}
+            </a>
+        </div>
+    </div>
+
+    <div class="notif-page">
+        <div class="notif-list">
+
+            {% if notifications %}
+            <div class="notif-header-row">
+                <span class="notif-count">{{ notifications|length }} notification{{ notifications|length|pluralize }}</span>
+            </div>
+
+            {% for notif in notifications %}
+<a href="{% url 'mark_notification_read' notif.id %}"
+   class="notif-item {% if not notif.is_read %}unread{% endif %}"
+   style="text-decoration:none;">
+    <div class="notif-icon">
+        {% if notif.type == 'relation_request' %}
+            <i class="fa-solid fa-link" style="color:#1F4E79;"></i>
+        {% elif notif.type == 'relation_accepted' %}
+            <i class="fa-solid fa-circle-check" style="color:#27ae60;"></i>
+        {% elif notif.type == 'relation_rejected' %}
+            <i class="fa-solid fa-circle-xmark" style="color:#e53935;"></i>
+        {% elif notif.type == 'join_approved' %}
+            <i class="fa-solid fa-house-chimney" style="color:#27ae60;"></i>
+        {% elif notif.type == 'new_post' %}
+            <i class="fa-solid fa-newspaper" style="color:#1565c0;"></i>
+        {% elif notif.type == 'new_event' %}
+            <i class="fa-solid fa-calendar-days" style="color:#e67e22;"></i>
+        {% elif notif.type == 'birthday' %}
+            <i class="fa-solid fa-cake-candles" style="color:#7b1fa2;"></i>
+        {% elif notif.type == 'new_like' %}
+            <i class="fa-solid fa-heart" style="color:#e53935;"></i>
+        {% elif notif.type == 'new_comment' %}
+            <i class="fa-solid fa-comment" style="color:#1565c0;"></i>
+        {% elif notif.type == 'new_album' %}
+    <i class="fa-solid fa-folder-plus" style="color:#7b1fa2;"></i>
+{% elif notif.type == 'new_media' %}
+    <i class="fa-solid fa-photo-film" style="color:#7b1fa2;"></i>
+        {% else %}
+            <i class="fa-solid fa-bell" style="color:#7a8fa6;"></i>
+        {% endif %}
+    </div>
+    <div class="notif-content">
+        <p>{{ notif.message }}</p>
+        <small><i class="fa-regular fa-clock"></i> {{ notif.created_at|timesince }}</small>
+    </div>
+    <div class="notif-link">
+        <i class="fa-solid fa-arrow-right"></i>
+    </div>
+</a>
+{% endfor %}
+
+            {% else %}
+            <div class="empty-state">
+                <i class="fa-solid fa-bell-slash"></i>
+                <p>Aucune notification pour le moment</p>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</main>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        document.querySelector('.main-content').classList.toggle('expanded');
+    }
+</script>
+
+</body>
+</html>

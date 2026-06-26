@@ -1,0 +1,366 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIFFA — Définir une relation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'global.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/members.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/relations.css' %}">
+</head>
+
+<body>
+
+    <!-- ─── SIDEBAR ─── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'indexOfAccounts' %}" class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+                <span>MIFFA</span>
+            </a>
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                {% if user.photo %}
+                <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+                {% else %}
+                <div class="avatar-placeholder">
+                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="user-info">
+                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+                <span class="user-role">{{ user.get_role_display }}</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Menu principal</div>
+            <a href="{% url 'dashboard' %}" class="nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span>Mon espace</span>
+            </a>
+            <a href="{% url 'members_list' %}" class="nav-item">
+                <i class="fa-solid fa-users"></i>
+                <span>Membres</span>
+            </a>
+            <a href="{% url 'add_relation' %}" class="nav-item active">
+                <i class="fa-solid fa-link"></i>
+                <span>Mes relations</span>
+                {% if pending_relation_count %}
+                <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+                    {{ pending_relation_count }}
+                </span>
+                {% endif %}
+            </a>
+            <a href="{% url 'family_tree' %}" class="nav-item">
+                <i class="fa-solid fa-tree"></i>
+                <span>Arbre généalogique</span>
+            </a>
+            <a href="{% url 'timeline_view' %}" class="nav-item">
+                <i class="fa-solid fa-timeline"></i>
+                <span>Chronologie</span>
+            </a>
+
+            <div class="nav-section-label">Communication</div>
+            <a href="{% url 'news_feed' %}" class="nav-item">
+                <i class="fa-solid fa-newspaper"></i>
+                <span>Fil d'actualité</span>
+            </a>
+
+            <div class="nav-section-label">Contenu</div>
+            <a href="{% url 'media_library' %}" class="nav-item">
+                <i class="fa-solid fa-images"></i>
+                <span>Médiathèque</span>
+            </a>
+            <a href="{% url 'calendar_view' %}" class="nav-item">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Calendrier</span>
+            </a>
+            <a href="{% url 'notifications' %}" class="nav-item">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+                {% if unread_notif_count %}
+                <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+                    {{ unread_notif_count }}
+                </span>
+                {% endif %}
+            </a>
+
+            {% if user.role == 'admin' %}
+            <div class="nav-section-label">Administration</div>
+            <a href="{% url 'admin_panel' %}" class="nav-item">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Administration</span>
+            </a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'deconnexion' %}" class="nav-item logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Déconnexion</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ─── CONTENU PRINCIPAL ─── -->
+    <main class="main-content">
+
+        <div class="topbar">
+            <div class="topbar-left">
+                <a href="{% url 'dashboard' %}" class="back-link">
+                    <i class="fa-solid fa-arrow-left"></i> Retour à mon espace
+                </a>
+                <h1>Définir une relation</h1>
+                <p>Indiquez votre lien avec un membre de la famille <strong>{{ user.family.name }}</strong></p>
+            </div>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert-banner alert-{{ message.tags }}">
+            <i class="fa-solid fa-circle-info"></i> {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <!-- ─── DEMANDES REÇUES ─── -->
+        {% if received_requests %}
+        <section class="requests-section received">
+            <h4><i class="fa-solid fa-bell" style="color:#e67e22;"></i> Demandes de relation reçues</h4>
+            {% for req in received_requests %}
+            <div class="request-item">
+                <div class="request-avatar">
+                    {% if req.from_user.photo %}
+                    <img src="{{ req.from_user.photo.url }}" alt="">
+                    {% else %}
+                    <div class="avatar-placeholder-sm">
+                        {{ req.from_user.first_name|first|upper }}{{ req.from_user.last_name|first|upper }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="request-info">
+                    <strong>{{ req.from_user.first_name }} {{ req.from_user.last_name }}</strong>
+                    <span>souhaite vous définir comme <em>{{ req.get_relation_type_display }}</em></span>
+                    <small>{{ req.created_at|date:"d/m/Y à H\hi" }}</small>
+                </div>
+                <div class="request-actions">
+                    <form method="POST" action="{% url 'accept_relation_request' req.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-accept">
+                            <i class="fa-solid fa-check"></i> Accepter
+                        </button>
+                    </form>
+                    <form method="POST" action="{% url 'reject_relation_request' req.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-reject">
+                            <i class="fa-solid fa-xmark"></i> Refuser
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <!-- ─── DEMANDES ENVOYÉES ─── -->
+        {% if sent_requests %}
+        <section class="requests-section sent">
+            <h4><i class="fa-solid fa-clock" style="color:#7a8fa6;"></i> Demandes envoyées en attente</h4>
+            {% for req in sent_requests %}
+            <div class="request-item pending">
+                <div class="request-avatar">
+                    {% if req.to_user.photo %}
+                    <img src="{{ req.to_user.photo.url }}" alt="">
+                    {% else %}
+                    <div class="avatar-placeholder-sm">
+                        {{ req.to_user.first_name|first|upper }}{{ req.to_user.last_name|first|upper }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="request-info">
+                    <strong>{{ req.to_user.first_name }} {{ req.to_user.last_name }}</strong>
+                    <span>Relation : <em>{{ req.get_relation_type_display }}</em></span>
+                    <small>Envoyée le {{ req.created_at|date:"d/m/Y" }}</small>
+                </div>
+                <span class="badge-pending-tag">
+                    <i class="fa-solid fa-hourglass-half"></i> En attente
+                </span>
+            </div>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <!-- FORMULAIRE -->
+        <section class="relation-form-section">
+            <div class="relation-form-card">
+                <div class="relation-form-header">
+                    <div class="form-icon"><i class="fa-solid fa-people-arrows"></i></div>
+                    <h3>Ajouter un lien familial</h3>
+                    <p>Choisissez un membre et précisez votre relation avec lui</p>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label>Membre concerné <span class="required">*</span></label>
+                        <input type="text" id="memberSearch" placeholder="Rechercher un membre..." autocomplete="off">
+                        <div id="memberResults" class="member-results"></div>
+
+                        <div id="memberSelected" class="member-selected" style="display:none">
+                            <img id="selectedAvatarImg" src="" alt="" style="display:none">
+                            <div id="selectedAvatarPlaceholder" class="avatar-placeholder-sm" style="display:none">
+                            </div>
+                            <span id="selectedName"></span>
+                            <button type="button" onclick="clearMember()">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                        <input type="hidden" name="related_member_id" id="relatedMemberId" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cette personne est mon... <span class="required">*</span></label>
+                        <select name="relation_type" required>
+                            <option value="">-- Choisissez la relation --</option>
+                            <option value="parent">Parent</option>
+                            <option value="enfant">Enfant</option>
+                            <option value="conjoint">Conjoint(e)</option>
+                            <option value="frere_soeur">Frère / Sœur</option>
+                            <option value="cousin">Cousin(e)</option>
+                            <option value="grand_parent">Grand-parent</option>
+                            <option value="petit_enfant">Petit-enfant</option>
+                            <option value="oncle_tante">Oncle / Tante</option>
+                            <option value="neveu_niece">Neveu / Nièce</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+
+                    <p class="relation-note">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Cette relation apparaîtra sur votre profil et sur l'arbre généalogique de la famille.
+                    </p>
+
+                    <button type="submit" class="btn-submit">
+                        <i class="fa-solid fa-check"></i> Enregistrer la relation
+                    </button>
+                </form>
+            </div>
+
+            <!-- RELATIONS EXISTANTES -->
+            {% if existing_relations %}
+            <div class="existing-relations">
+                <h4><i class="fa-solid fa-list"></i> Vos relations déjà définies</h4>
+                <div class="relations-grid">
+                    {% for rel in existing_relations %}
+                    <div class="relation-card">
+                        {% if rel.related_member.photo %}
+                        <img src="{{ rel.related_member.photo.url }}" alt="">
+                        {% else %}
+                        <div class="avatar-placeholder-sm">
+                            {{ rel.related_member.first_name|first|upper }} {{ rel.related_member.last_name|first|upper }}
+                        </div>
+                        {% endif %}
+                        <a href="{% url 'member_profile' rel.related_member.id %}" style="text-decoration:none;flex:1;">
+    <div>
+        <span class="relation-name">{{ rel.related_member.first_name }} {{ rel.related_member.last_name }}</span>
+        <span class="relation-type">{{ rel.get_relation_type_display }}</span>
+    </div>
+</a>
+                        <form method="POST" action="{% url 'delete_relation' rel.id %}"
+                            onsubmit="return confirm('Supprimer cette relation ?');" style="margin-left:auto">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-remove-relation">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </section>
+
+    </main>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.querySelector('.main-content').classList.toggle('expanded');
+        }
+
+        let searchTimeout;
+        function searchMembers(query) {
+            clearTimeout(searchTimeout);
+            if (query.length < 1) {
+                document.getElementById('memberResults').innerHTML = '';
+                return;
+            }
+            searchTimeout = setTimeout(() => {
+                fetch(`/accounts/search-members/?q=${encodeURIComponent(query)}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        const box = document.getElementById('memberResults');
+                        if (data.length === 0) {
+                            box.innerHTML = '<p class="no-result">Aucun membre trouvé.</p>';
+                            return;
+                        }
+                        box.innerHTML = data.map(m =>
+                            `<div class="member-result-item" onclick="selectMember(${m.id}, '${m.name}', '${m.photo || ''}', '${m.initials}')">
+                                ${m.photo ? `<img src="${m.photo}" alt="">` : `<div class="avatar-placeholder-sm">${m.initials}</div>`}
+                                <span>${m.name}</span>
+                            </div>`
+                        ).join('');
+                    });
+            }, 250);
+        }
+
+        function selectMember(id, name, photo, initials) {
+            document.getElementById('relatedMemberId').value = id;
+            document.getElementById('selectedName').textContent = name;
+
+            const img = document.getElementById('selectedAvatarImg');
+            const placeholder = document.getElementById('selectedAvatarPlaceholder');
+            if (photo) {
+                img.src = photo;
+                img.style.display = 'block';
+                placeholder.style.display = 'none';
+            } else {
+                placeholder.textContent = initials;
+                placeholder.style.display = 'flex';
+                img.style.display = 'none';
+            }
+
+            document.getElementById('memberSelected').style.display = 'flex';
+            document.getElementById('memberResults').innerHTML = '';
+            document.getElementById('memberSearch').value = '';
+        }
+
+        function clearMember() {
+            document.getElementById('relatedMemberId').value = '';
+            document.getElementById('memberSelected').style.display = 'none';
+        }
+
+        document.getElementById('memberSearch').addEventListener('input', function () {
+            searchMembers(this.value);
+        });
+    </script>
+
+</body>
+
+</html>

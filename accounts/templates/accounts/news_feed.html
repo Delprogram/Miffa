@@ -1,0 +1,349 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIFFA — Fil d'actualité</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'global.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/feed.css' %}">
+</head>
+
+<body>
+
+    <!-- ─── SIDEBAR ─── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'indexOfAccounts' %}" class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+                <span>MIFFA</span>
+            </a>
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                {% if user.photo %}
+                <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+                {% else %}
+                <div class="avatar-placeholder">
+                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="user-info">
+                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+                <span class="user-role">{{ user.get_role_display }}</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Menu principal</div>
+            <a href="{% url 'dashboard' %}" class="nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span>Mon espace</span>
+            </a>
+            <a href="{% url 'members_list' %}" class="nav-item">
+                <i class="fa-solid fa-users"></i>
+                <span>Membres</span>
+            </a>
+            <a href="{% url 'add_relation' %}" class="nav-item">
+        <i class="fa-solid fa-link"></i>
+        <span>Mes relations</span>
+        {% if pending_relation_count %}
+        <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+            {{ pending_relation_count }}
+        </span>
+        {% endif %}
+    </a>
+            <a href="{% url 'family_tree' %}" class="nav-item">
+                <i class="fa-solid fa-tree"></i>
+                <span>Arbre généalogique</span>
+            </a>
+            <a href="{% url 'timeline_view' %}" class="nav-item">
+                <i class="fa-solid fa-timeline"></i>
+                <span>Chronologie</span>
+            </a>
+
+            <div class="nav-section-label">Communication</div>
+            <a href="{% url 'news_feed' %}" class="nav-item active">
+                <i class="fa-solid fa-newspaper"></i>
+                <span>Fil d'actualité</span>
+            </a>
+
+            <div class="nav-section-label">Contenu</div>
+            <a href="{% url 'media_library' %}" class="nav-item">
+                <i class="fa-solid fa-images"></i>
+                <span>Médiathèque</span>
+            </a>
+            <a href="{% url 'calendar_view' %}" class="nav-item">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Calendrier</span>
+            </a>
+            <a href="{% url 'notifications' %}" class="nav-item">
+                <i class="fa-solid fa-bell"></i>
+                <span>Notifications</span>
+                {% if unread_notif_count %}
+                <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+                    {{ unread_notif_count }}
+                </span>
+                {% endif %}
+            </a>
+
+            {% if user.role == 'admin' %}
+            <div class="nav-section-label">Administration</div>
+            <a href="{% url 'admin_panel' %}" class="nav-item">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Administration</span>
+            </a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'deconnexion' %}" class="nav-item logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Déconnexion</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ─── CONTENU PRINCIPAL ─── -->
+    <main class="main-content feed-main">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>Fil d'actualité</h1>
+                <p>Les nouvelles de <strong>{{ user.family.name }}</strong></p>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert-banner alert-{{ message.tags }}">
+                <i class="fa-solid fa-circle-info"></i> {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="feed-layout">
+
+            <!-- COLONNE PRINCIPALE -->
+            <div class="feed-column">
+
+                <!-- COMPOSER -->
+                <div class="composer-card">
+                    <div class="composer-header">
+                        <div class="composer-avatar">
+                            {% if user.photo %}
+                                <img src="{{ user.photo.url }}" alt="">
+                            {% else %}
+                                <div class="avatar-placeholder">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</div>
+                            {% endif %}
+                        </div>
+                        <button class="composer-trigger" onclick="openModal('postModal')">
+                            Quoi de neuf, {{ user.first_name }} ?
+                        </button>
+                    </div>
+                    <div class="composer-actions">
+                        <button onclick="openModal('postModal')"><i class="fa-solid fa-image" style="color:#43a047"></i> Photo</button>
+                        <button onclick="openModal('postModal')"><i class="fa-solid fa-cake-candles" style="color:#e65100"></i> Annonce</button>
+                        <button onclick="openModal('postModal')"><i class="fa-solid fa-pen" style="color:#1565c0"></i> Texte</button>
+                    </div>
+                </div>
+
+                <!-- LISTE DES POSTS -->
+                {% if posts %}
+                {% for post in posts %}
+                <article class="post-card">
+                    <div class="post-header">
+                        <div class="post-avatar">
+                            {% if post.author.photo %}
+                                <img src="{{ post.author.photo.url }}" alt="">
+                            {% else %}
+                                <div class="avatar-placeholder">{{ post.author.first_name|first|upper }}{{ post.author.last_name|first|upper }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="post-author-info">
+                            <span class="post-author-name">{{ post.author.first_name }} {{ post.author.last_name }}</span>
+                            <span class="post-date">{{ post.created_at|timesince }}</span>
+                        </div>
+                        {% if post.author == user or user.role == 'admin' %}
+                        <form method="POST" action="{% url 'delete_post' post.id %}"
+                            onsubmit="return confirm('Supprimer cette publication ?');" class="post-delete-form">
+                            {% csrf_token %}
+                            <button type="submit" class="post-delete-btn"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                        {% endif %}
+                    </div>
+
+                    <div class="post-body">
+                        {% if post.content %}<p class="post-text">{{ post.content }}</p>{% endif %}
+                        {% if post.image %}
+                        <div class="post-image">
+                            <img src="{{ post.image.url }}" alt="">
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="post-stats">
+                        {% if post.reaction_count > 0 %}
+                        <span><i class="fa-solid fa-heart" style="color:#e53935"></i> {{ post.reaction_count }}</span>
+                        {% endif %}
+                        {% if post.comment_count > 0 %}
+                        <span>{{ post.comment_count }} commentaire{{ post.comment_count|pluralize }}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="post-actions">
+                        <form method="POST" action="{% url 'toggle_reaction' post.id %}" class="reaction-form">
+                            {% csrf_token %}
+                            <button type="submit" class="post-action-btn {% if post.user_reacted %}reacted{% endif %}">
+                                <i class="fa-solid fa-heart"></i> J'aime
+                            </button>
+                        </form>
+                        <button class="post-action-btn" onclick="toggleComments({{ post.id }})">
+                            <i class="fa-solid fa-comment"></i> Commenter
+                        </button>
+                    </div>
+
+                    <!-- COMMENTAIRES -->
+                    <div class="comments-section" id="comments-{{ post.id }}" style="display:none">
+                        {% for comment in post.comments.all %}
+                        <div class="comment-item">
+                            <div class="comment-avatar">
+                                {% if comment.author.photo %}
+                                    <img src="{{ comment.author.photo.url }}" alt="">
+                                {% else %}
+                                    <div class="avatar-placeholder-sm">{{ comment.author.first_name|first|upper }}{{ comment.author.last_name|first|upper }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="comment-bubble">
+                                <span class="comment-author">{{ comment.author.first_name }} {{ comment.author.last_name }}</span>
+                                <p>{{ comment.content }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        <form method="POST" action="{% url 'add_comment' post.id %}" class="comment-form">
+                            {% csrf_token %}
+                            <input type="text" name="content" placeholder="Écrire un commentaire..." required>
+                            <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+                        </form>
+                    </div>
+                </article>
+                {% endfor %}
+                {% else %}
+                <div class="empty-state feed-empty">
+                    <i class="fa-solid fa-newspaper"></i>
+                    <p>Aucune publication pour le moment.</p>
+                    <button class="btn-submit" style="width:auto; display:inline-flex; margin-top:14px;" onclick="openModal('postModal')">
+                        <i class="fa-solid fa-plus"></i> Créer la première publication
+                    </button>
+                </div>
+                {% endif %}
+
+            </div>
+
+            <!-- COLONNE LATÉRALE -->
+            <aside class="feed-sidebar">
+                <div class="sidebar-widget">
+                    <h4><i class="fa-solid fa-cake-candles"></i> Anniversaires à venir</h4>
+                    {% if upcoming_birthdays %}
+                        {% for b in upcoming_birthdays %}
+                        <div class="birthday-item">
+                            {% if b.member.photo %}
+                                <img src="{{ b.member.photo.url }}" alt="">
+                            {% else %}
+                                <div class="avatar-placeholder-sm">{{ b.member.first_name|first|upper }}{{ b.member.last_name|first|upper }}</div>
+                            {% endif %}
+                            <div>
+                                <span class="birthday-name">{{ b.member.first_name }} {{ b.member.last_name }}</span>
+                                <span class="birthday-date">{{ b.days_until }} jour{{ b.days_until|pluralize }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="widget-empty">Aucun anniversaire à venir.</p>
+                    {% endif %}
+                </div>
+            </aside>
+
+        </div>
+
+    </main>
+
+    <!-- ─── MODAL NOUVEAU POST ─── -->
+    <div class="modal-overlay" id="postModal" onclick="closeModal('postModal')">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Créer une publication</h3>
+                <button onclick="closeModal('postModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form method="POST" action="{% url 'create_post' %}" enctype="multipart/form-data" class="modal-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <textarea name="content" rows="4" placeholder="Partagez une nouvelle avec votre famille..."></textarea>
+                </div>
+                <div class="file-upload">
+                    <input type="file" name="image" id="postImageInput" accept="image/*" onchange="previewPostImage(this)">
+                    <div class="file-upload-label">
+                        <i class="fa-solid fa-image"></i>
+                        <span id="postImageLabel">Ajouter une photo (optionnel)</span>
+                    </div>
+                </div>
+                <div id="postImagePreview" class="photo-preview" style="display:none">
+                    <img id="postPreviewImg" src="" alt="" style="border-radius:10px; width:100%; height:auto; max-height:220px; object-fit:cover;">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('postModal')">Annuler</button>
+                    <button type="submit" class="btn-save">
+                        <i class="fa-solid fa-paper-plane"></i> Publier
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.querySelector('.main-content').classList.toggle('expanded');
+        }
+        function openModal(id) {
+            document.getElementById(id).classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        function previewPostImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('postPreviewImg').src = e.target.result;
+                    document.getElementById('postImagePreview').style.display = 'block';
+                    document.getElementById('postImageLabel').textContent = input.files[0].name;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        function toggleComments(postId) {
+            const el = document.getElementById('comments-' + postId);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+
+</body>
+
+</html>
