@@ -276,6 +276,10 @@ def join_family(request):
 
 User = get_user_model()
 
+@login_required
+def user_guide(request):
+    return render(request, 'accounts/user_guide.html')
+
 
 @login_required
 @admin_required

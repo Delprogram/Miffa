@@ -57,5 +57,6 @@ urlpatterns = [
     path('direct-add/<int:request_id>/reject/', views.reject_direct_add, name='reject_direct_add'),
     path('join-family/', views.join_family, name='join_family'),
     path('notifications/clear/', views.clear_notifications, name='clear_notifications'),
+    path('guide/', views.user_guide, name='user_guide'),
 
 ]
