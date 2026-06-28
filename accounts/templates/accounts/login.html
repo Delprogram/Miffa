@@ -8,8 +8,8 @@
     <title>MIFFA — Connexion</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'global.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
@@ -17,121 +17,121 @@
 
 <body>
 
-    <!-- NAVBAR -->
-    <header class="navbar">
-        <a href="{% url 'indexOfAccounts' %}" class="logo">
-            <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
-            MIFFA
-        </a>
-        <nav class="nav-links">
-            <a href="{% url 'indexOfAccounts' %}">Accueil</a>
-            <a href="{% url 'register' %}">S'inscrire</a>
-        </nav>
-    </header>
+<!-- NAVBAR -->
+<header class="navbar">
+    <a href="{% url 'indexOfAccounts' %}" class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+        MIFFA
+    </a>
+    <nav class="nav-links">
+        <a href="{% url 'indexOfAccounts' %}">Accueil</a>
+        <a href="{% url 'register' %}">S'inscrire</a>
+    </nav>
+</header>
 
-    <!-- PAGE -->
-    <main class="login-page">
+<!-- PAGE -->
+<main class="login-page">
 
-        <!-- SIDE DÉCORATIF -->
-        <div class="login-side">
-            <div class="side-bg"></div>
-            <div class="side-content">
-                <div class="side-icon"><i class="fa-solid fa-seedling"></i></div>
-                <h2>Bon retour<br><em>dans votre famille</em></h2>
-                <p>Connectez-vous pour retrouver vos proches, vos souvenirs et votre histoire familiale.</p>
-                <div class="side-quote">
-                    <i class="fa-solid fa-quote-left"></i>
-                    <span>La famille, c'est là où la vie commence et où l'amour ne finit jamais.</span>
-                </div>
+    <!-- SIDE DÉCORATIF -->
+    <div class="login-side">
+        <div class="side-bg"></div>
+        <div class="side-content">
+            <div class="side-icon"><i class="fa-solid fa-seedling"></i></div>
+            <h2>Bon retour<br><em>dans votre famille</em></h2>
+            <p>Connectez-vous pour retrouver vos proches, vos souvenirs et votre histoire familiale.</p>
+            <div class="side-quote">
+                <i class="fa-solid fa-quote-left"></i>
+                <span>La famille, c'est là où la vie commence et où l'amour ne finit jamais.</span>
             </div>
         </div>
+    </div>
 
-        <!-- FORMULAIRE -->
-        <div class="login-form-wrapper">
-            <div class="form-card">
+    <!-- FORMULAIRE -->
+    <div class="login-form-wrapper">
+        <div class="form-card">
 
-                <div class="form-header">
-                    <div class="form-icon"><i class="fa-solid fa-right-to-bracket"></i></div>
-                    <h3>Connexion</h3>
-                    <p>Entrez vos identifiants pour accéder à votre espace</p>
+            <div class="form-header">
+                <div class="form-icon"><i class="fa-solid fa-right-to-bracket"></i></div>
+                <h3>Connexion</h3>
+                <p>Entrez vos identifiants pour accéder à votre espace</p>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                {% if error_message %}
+                <div class="alert-error">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    {{ error_message }}
                 </div>
+                {% endif %}
 
-                <form method="POST">
-                    {% csrf_token %}
-
-                    {% if error_message %}
-                    <div class="alert-error">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        {{ error_message }}
+                <div class="form-group">
+                    <label for="id_username">
+                        <i class="fa-solid fa-user"></i> Nom d'utilisateur
+                    </label>
+                    <input type="text" name="username" id="id_username" placeholder="Votre nom d'utilisateur"
+                           autofocus required>
+                    {% if form.username.errors %}
+                    <div class="error"><i class="fa-solid fa-circle-exclamation"></i> {{ form.username.errors.0 }}
                     </div>
                     {% endif %}
+                </div>
 
-                    <div class="form-group">
-                        <label for="id_username">
-                            <i class="fa-solid fa-user"></i> Nom d'utilisateur
-                        </label>
-                        <input type="text" name="username" id="id_username" placeholder="Votre nom d'utilisateur"
-                            autofocus required>
-                        {% if form.username.errors %}
-                        <div class="error"><i class="fa-solid fa-circle-exclamation"></i> {{ form.username.errors.0 }}
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group">
-                        <label for="id_password">
-                            <i class="fa-solid fa-lock"></i> Mot de passe
-                        </label>
-                        <div class="password-container">
-                            <input type="password" name="password" id="id_password" placeholder="Votre mot de passe"
-                                required>
-                            <span class="toggle-eye" onclick="togglePassword('id_password', this)">
+                <div class="form-group">
+                    <label for="id_password">
+                        <i class="fa-solid fa-lock"></i> Mot de passe
+                    </label>
+                    <div class="password-container">
+                        <input type="password" name="password" id="id_password" placeholder="Votre mot de passe"
+                               required>
+                        <span class="toggle-eye" onclick="togglePassword('id_password', this)">
                                 <i class="fa-solid fa-eye"></i>
                             </span>
-                        </div>
-                        {% if form.password.errors %}
-                        <div class="error"><i class="fa-solid fa-circle-exclamation"></i> {{ form.password.errors.0 }}
-                        </div>
-                        {% endif %}
                     </div>
-
-                    <div class="form-options">
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="remember_me">
-                            <span class="checkmark"></span>
-                            Se souvenir de moi
-                        </label>
-                        <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+                    {% if form.password.errors %}
+                    <div class="error"><i class="fa-solid fa-circle-exclamation"></i> {{ form.password.errors.0 }}
                     </div>
+                    {% endif %}
+                </div>
 
-                    <button type="submit" class="btn-submit">
-                        <i class="fa-solid fa-right-to-bracket"></i>
-                        Se connecter
-                    </button>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="remember_me">
+                        <span class="checkmark"></span>
+                        Se souvenir de moi
+                    </label>
+                    <a href="#" class="forgot-link">Mot de passe oublié ?</a>
+                </div>
 
-                    <p class="register-link">
-                        Pas encore de compte ? <a href="{% url 'register' %}">S'inscrire</a>
-                    </p>
+                <button type="submit" class="btn-submit">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    Se connecter
+                </button>
 
-                </form>
-            </div>
+                <p class="register-link">
+                    Pas encore de compte ? <a href="{% url 'register' %}">S'inscrire</a>
+                </p>
+
+            </form>
         </div>
+    </div>
 
-    </main>
+</main>
 
-    <script>
-        function togglePassword(fieldId, iconContainer) {
-            const field = document.getElementById(fieldId);
-            const icon = iconContainer.querySelector("i");
-            if (field.type === "password") {
-                field.type = "text";
-                icon.classList.replace("fa-eye", "fa-eye-slash");
-            } else {
-                field.type = "password";
-                icon.classList.replace("fa-eye-slash", "fa-eye");
-            }
+<script>
+    function togglePassword(fieldId, iconContainer) {
+        const field = document.getElementById(fieldId);
+        const icon = iconContainer.querySelector("i");
+        if (field.type === "password") {
+            field.type = "text";
+            icon.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+            field.type = "password";
+            icon.classList.replace("fa-eye-slash", "fa-eye");
         }
-    </script>
+    }
+</script>
 
 </body>
 

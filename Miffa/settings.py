@@ -41,12 +41,18 @@ INSTALLED_APPS = [
     'accounts'
 ]
 
+INSTALLED_APPS += ['django_crontab']
+CRONJOBS = [
+    ('*/5 * * * *', 'django.core.management.call_command', ['check_pending_requests']),
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    #'accounts.middleware.PendingApprovalMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -120,10 +126,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATICFILES_DIRS = [
-    r'C:\Users\fidel\Downloads\Cours_Coda_B1\projet_final\Miffa\static',
+    BASE_DIR / 'static',
 ]
 
-EDIA_URL = '/media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -136,5 +142,14 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # Ou définir une durée fixe (en secondes)
 SESSION_COOKIE_AGE = 3600  # 1 heure max même si le navigateur reste ouvert
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'MIFFA <noreply@miffa.app>'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'fidelahouanhou19@gmail.com'
+EMAIL_HOST_PASSWORD = 'znbxmfhmxqxabqen'  # pas ton vrai mdp Gmail
+DEFAULT_FROM_EMAIL = 'MIFFA <fidelahouanhou19@gmail.com>'
+
+LOGIN_URL = '/accounts/login/'
+
+SITE_URL = 'http://127.0.0.1:8000'  # à changer en production

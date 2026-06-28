@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MIFFA — Notifications</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'global.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
@@ -125,50 +126,62 @@
         <div class="notif-list">
 
             {% if notifications %}
-            <div class="notif-header-row">
+            <div class="notif-header-row" style="display:flex;justify-content:space-between;align-items:center;">
                 <span class="notif-count">{{ notifications|length }} notification{{ notifications|length|pluralize }}</span>
+                <form method="POST" action="{% url 'clear_notifications' %}"
+                      onsubmit="return confirm('Supprimer toutes vos notifications ?');">
+                    {% csrf_token %}
+                    <button type="submit"
+                            style="background:none;border:1px solid var(--border);color:var(--text-mid);padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;">
+                        <i class="fa-solid fa-trash-can"></i> Tout effacer
+                    </button>
+                </form>
             </div>
 
             {% for notif in notifications %}
-<a href="{% url 'mark_notification_read' notif.id %}"
-   class="notif-item {% if not notif.is_read %}unread{% endif %}"
-   style="text-decoration:none;">
-    <div class="notif-icon">
-        {% if notif.type == 'relation_request' %}
-            <i class="fa-solid fa-link" style="color:#1F4E79;"></i>
-        {% elif notif.type == 'relation_accepted' %}
-            <i class="fa-solid fa-circle-check" style="color:#27ae60;"></i>
-        {% elif notif.type == 'relation_rejected' %}
-            <i class="fa-solid fa-circle-xmark" style="color:#e53935;"></i>
-        {% elif notif.type == 'join_approved' %}
-            <i class="fa-solid fa-house-chimney" style="color:#27ae60;"></i>
-        {% elif notif.type == 'new_post' %}
-            <i class="fa-solid fa-newspaper" style="color:#1565c0;"></i>
-        {% elif notif.type == 'new_event' %}
-            <i class="fa-solid fa-calendar-days" style="color:#e67e22;"></i>
-        {% elif notif.type == 'birthday' %}
-            <i class="fa-solid fa-cake-candles" style="color:#7b1fa2;"></i>
-        {% elif notif.type == 'new_like' %}
-            <i class="fa-solid fa-heart" style="color:#e53935;"></i>
-        {% elif notif.type == 'new_comment' %}
-            <i class="fa-solid fa-comment" style="color:#1565c0;"></i>
-        {% elif notif.type == 'new_album' %}
-    <i class="fa-solid fa-folder-plus" style="color:#7b1fa2;"></i>
-{% elif notif.type == 'new_media' %}
-    <i class="fa-solid fa-photo-film" style="color:#7b1fa2;"></i>
-        {% else %}
-            <i class="fa-solid fa-bell" style="color:#7a8fa6;"></i>
-        {% endif %}
-    </div>
-    <div class="notif-content">
-        <p>{{ notif.message }}</p>
-        <small><i class="fa-regular fa-clock"></i> {{ notif.created_at|timesince }}</small>
-    </div>
-    <div class="notif-link">
-        <i class="fa-solid fa-arrow-right"></i>
-    </div>
-</a>
-{% endfor %}
+            <a href="{% url 'mark_notification_read' notif.id %}"
+               class="notif-item {% if not notif.is_read %}unread{% endif %}"
+               style="text-decoration:none;">
+                <div class="notif-icon">
+                    {% if notif.type == 'relation_request' %}
+                    <i class="fa-solid fa-link" style="color:#1F4E79;"></i>
+                    {% elif notif.type == 'relation_accepted' %}
+                    <i class="fa-solid fa-circle-check" style="color:#27ae60;"></i>
+                    {% elif notif.type == 'relation_rejected' %}
+                    <i class="fa-solid fa-circle-xmark" style="color:#e53935;"></i>
+                    {% elif notif.type == 'join_approved' %}
+                    <i class="fa-solid fa-house-chimney" style="color:#27ae60;"></i>
+                    {% elif notif.type == 'new_post' %}
+                    <i class="fa-solid fa-newspaper" style="color:#1565c0;"></i>
+                    {% elif notif.type == 'new_event' %}
+                    <i class="fa-solid fa-calendar-days" style="color:#e67e22;"></i>
+                    {% elif notif.type == 'birthday' %}
+                    <i class="fa-solid fa-cake-candles" style="color:#7b1fa2;"></i>
+                    {% elif notif.type == 'new_like' %}
+                    <i class="fa-solid fa-heart" style="color:#e53935;"></i>
+                    {% elif notif.type == 'new_comment' %}
+                    <i class="fa-solid fa-comment" style="color:#1565c0;"></i>
+                    {% elif notif.type == 'new_album' %}
+                    <i class="fa-solid fa-folder-plus" style="color:#7b1fa2;"></i>
+                    {% elif notif.type == 'new_media' %}
+                    <i class="fa-solid fa-photo-film" style="color:#7b1fa2;"></i>
+                    {% elif notif.type == 'removal_vote' %}
+                    <i class="fa-solid fa-vote-yea" style="color:#c2185b;"></i>
+                    {% elif notif.type == 'removal_vote_target' %}
+                    <i class="fa-solid fa-triangle-exclamation" style="color:#e67e22;"></i>
+                    {% else %}
+                    <i class="fa-solid fa-bell" style="color:#7a8fa6;"></i>
+                    {% endif %}
+                </div>
+                <div class="notif-content">
+                    <p>{{ notif.message }}</p>
+                    <small><i class="fa-regular fa-clock"></i> {{ notif.created_at|timesince }}</small>
+                </div>
+                <div class="notif-link">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+            {% endfor %}
 
             {% else %}
             <div class="empty-state">

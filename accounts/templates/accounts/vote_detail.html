@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIFFA — Vote en cours</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'global.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
+</head>
+
+<body>
+
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="{% url 'indexOfAccounts' %}" class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+            <span>MIFFA</span>
+        </a>
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            {% if user.photo %}
+            <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+            {% else %}
+            <div class="avatar-placeholder">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</div>
+            {% endif %}
+        </div>
+        <div class="user-info">
+            <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+            <span class="user-role">{{ user.get_role_display }}</span>
+        </div>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="{% url 'dashboard' %}" class="nav-item">
+            <i class="fa-solid fa-house"></i><span>Mon espace</span>
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="{% url 'deconnexion' %}" class="nav-item logout">
+            <i class="fa-solid fa-right-from-bracket"></i><span>Déconnexion</span>
+        </a>
+    </div>
+</aside>
+
+<!-- ─── CONTENU PRINCIPAL ─── -->
+<main class="main-content">
+
+    <div class="topbar">
+        <div class="topbar-left">
+            <h1>Vote de retrait</h1>
+            <p>Famille <strong>{{ vote.family.name }}</strong></p>
+        </div>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert-banner alert-{{ message.tags }}">
+        <i class="fa-solid fa-circle-info"></i> {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <section class="profile-section">
+        <div class="profile-card" style="padding:32px;">
+
+            {% if not vote.is_active %}
+            <div class="alert-banner alert-info" style="margin-bottom:0;">
+                <i class="fa-solid fa-circle-check"></i>
+                Ce vote est terminé. Résultat : {{ yes_votes }} pour / {{ no_votes }} contre.
+            </div>
+
+            {% elif user == vote.target_member %}
+            <div class="alert-banner alert-warning" style="margin-bottom:0;">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                Vous ne pouvez pas voter pour votre propre retrait.
+            </div>
+
+            {% elif already_voted %}
+            <div class="alert-banner alert-info" style="margin-bottom:0;">
+                <i class="fa-solid fa-circle-check"></i>
+                Vous avez déjà voté. En attente des autres membres ({{ entries_count }}/{{ total_voters }} ont voté).
+            </div>
+
+            {% else %}
+            <div style="text-align:center;">
+                <div class="form-icon" style="margin:0 auto 16px;width:64px;height:64px;font-size:24px;">
+                    <i class="fa-solid fa-vote-yea"></i>
+                </div>
+                <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--green-deep);margin-bottom:10px;">
+                    Faut-il retirer {{ vote.target_member.first_name }} {{ vote.target_member.last_name }} de la famille
+                    ?
+                </h3>
+                <p style="color:var(--text-light);font-size:14px;margin-bottom:8px;">
+                    Vote initié par {{ vote.initiated_by.first_name }} {{ vote.initiated_by.last_name }}
+                </p>
+                <p style="color:var(--text-light);font-size:13px;margin-bottom:24px;">
+                    {{ entries_count }}/{{ total_voters }} membres ont déjà voté
+                </p>
+
+                <form method="POST" action="{% url 'cast_removal_vote' vote.id %}">
+                    {% csrf_token %}
+                    <div style="display:flex;gap:14px;justify-content:center;">
+                        <button type="submit" name="vote" value="yes" class="btn-save" style="background:var(--red);">
+                            <i class="fa-solid fa-check"></i> Oui, retirer
+                        </button>
+                        <button type="submit" name="vote" value="no" class="btn-save">
+                            <i class="fa-solid fa-xmark"></i> Non, garder
+                        </button>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+
+        </div>
+    </section>
+
+</main>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        document.querySelector('.main-content').classList.toggle('expanded');
+    }
+</script>
+
+</body>
+
+</html>

@@ -6,17 +6,34 @@ class User(AbstractUser):
     ROLE_CHOICES = (
         ('admin', 'Administrateur'),
         ('member', 'Membre'),
-        ('guest', 'Invité'),
+        # ('guest', 'Invité'),
     )
 
+    email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=150)
-    last_name  = models.CharField(max_length=150)
-    role       = models.CharField(max_length=20, choices=ROLE_CHOICES, default='member')
-    photo      = models.ImageField(upload_to='profiles/', null=True, blank=True)
-    bio        = models.TextField(blank=True)
+    last_name = models.CharField(max_length=150)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='member')
+    photo = models.ImageField(upload_to='profiles/', null=True, blank=True)
+    bio = models.TextField(blank=True)
     birth_date = models.DateField(default='2000-01-01')
+    profession = models.CharField(max_length=150, blank=True)
+    phone = models.CharField(max_length=20, blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    # Champs de confidentialité
+    hide_email = models.BooleanField(default=False)
+    hide_birth_date = models.BooleanField(default=False)
+    hide_phone = models.BooleanField(default=False)
+    hide_profession = models.BooleanField(default=False)
+    hide_city = models.BooleanField(default=False)
+    is_deceased = models.BooleanField(default=False)
+    deceased_marked_by = models.ForeignKey(
+        'self', on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='marked_deceased'
+    )
+    deceased_at = models.DateTimeField(null=True, blank=True)
     relation_to_family = models.CharField(max_length=100, blank=True, default='')
-    family     = models.ForeignKey(
+    family = models.ForeignKey(
         'Family',
         on_delete=models.SET_NULL,
         null=True, blank=True,
@@ -26,10 +43,11 @@ class User(AbstractUser):
 
 import uuid
 
+
 class Family(models.Model):
     name = models.CharField(max_length=150)
     code = models.CharField(max_length=10, unique=True, blank=True, null=True)
-    banner     = models.ImageField(upload_to='Bannieres/', null=True, blank=True)
+    banner = models.ImageField(upload_to='Bannieres/', null=True, blank=True)
     created_by = models.ForeignKey(
         'User', on_delete=models.SET_NULL,
         null=True, related_name='created_families'
@@ -43,23 +61,6 @@ class Family(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.code})"
-
-
-class JoinRequest(models.Model):
-    STATUS_CHOICES = (
-        ('pending',  'En attente'),
-        ('approved', 'Approuvée'),
-        ('rejected', 'Refusée'),
-    )
-    user     = models.ForeignKey('User',   on_delete=models.CASCADE, related_name='join_requests')
-    family   = models.ForeignKey(Family,   on_delete=models.CASCADE, related_name='join_requests')
-    relation = models.CharField(max_length=100, blank=True, default='')
-    status   = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user} → {self.family} ({self.status})"
-
 
 
 class Relation(models.Model):
@@ -86,23 +87,25 @@ class Relation(models.Model):
     def __str__(self):
         return f"{self.member} → {self.related_member} ({self.relation_type})"
 
+
 class RelationRequest(models.Model):
     STATUS_CHOICES = (
-        ('pending',  'En attente'),
+        ('pending', 'En attente'),
         ('accepted', 'Acceptée'),
         ('rejected', 'Refusée'),
     )
-    from_user    = models.ForeignKey('User', on_delete=models.CASCADE, related_name='sent_relation_requests')
-    to_user      = models.ForeignKey('User', on_delete=models.CASCADE, related_name='received_relation_requests')
+    from_user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='sent_relation_requests')
+    to_user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='received_relation_requests')
     relation_type = models.CharField(max_length=20, choices=Relation.RELATION_CHOICES)
-    status       = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    created_at   = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('from_user', 'to_user')
 
     def __str__(self):
         return f"{self.from_user} → {self.to_user} ({self.relation_type}) [{self.status}]"
+
 
 class Post(models.Model):
     author = models.ForeignKey('User', on_delete=models.CASCADE, related_name='posts')
@@ -141,6 +144,7 @@ class Comment(models.Model):
     class Meta:
         ordering = ['created_at']
 
+
 class Event(models.Model):
     EVENT_TYPES = (
         ('anniversaire', 'Anniversaire'),
@@ -167,23 +171,26 @@ class RSVP(models.Model):
     class Meta:
         unique_together = ('event', 'user')
 
+
 class Notification(models.Model):
     TYPE_CHOICES = (
-        ('relation_request',  'Demande de relation'),
+        ('relation_request', 'Demande de relation'),
         ('relation_accepted', 'Relation acceptée'),
         ('relation_rejected', 'Relation refusée'),
-        ('join_approved',     'Adhésion approuvée'),
-        ('new_post',          'Nouvelle publication'),
+        ('join_approved', 'Adhésion approuvée'),
+        ('new_post', 'Nouvelle publication'),
         ('new_comment', 'Nouveau commentaire'),
         ('new_like', 'Nouveau like'),
-        ('new_event',         'Nouvel événement'),
-        ('birthday',          'Anniversaire'),
+        ('new_event', 'Nouvel événement'),
+        ('birthday', 'Anniversaire'),
+        ('removal_vote', 'Vote de retrait'),
+        ('removal_vote_target', 'Vote de retrait — vous concerne'),
     )
-    user       = models.ForeignKey('User', on_delete=models.CASCADE, related_name='notifications')
-    type       = models.CharField(max_length=30, choices=TYPE_CHOICES)
-    message    = models.CharField(max_length=255)
-    link       = models.CharField(max_length=200, blank=True)
-    is_read    = models.BooleanField(default=False)
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='notifications')
+    type = models.CharField(max_length=30, choices=TYPE_CHOICES)
+    message = models.CharField(max_length=255)
+    link = models.CharField(max_length=200, blank=True)
+    is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -215,6 +222,7 @@ class MediaItem(models.Model):
     class Meta:
         ordering = ['-uploaded_at']
 
+
 class TimelineEvent(models.Model):
     EVENT_TYPES = (
         ('naissance', 'Naissance'),
@@ -235,3 +243,99 @@ class TimelineEvent(models.Model):
 
     class Meta:
         ordering = ['-date']
+
+
+class JoinRequest(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'En attente'),
+        ('approved', 'Approuvée'),
+        ('rejected', 'Refusée'),
+    )
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='join_requests')
+    family = models.ForeignKey(Family, on_delete=models.CASCADE, related_name='join_requests')
+    relation = models.CharField(max_length=100, blank=True, default='')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    reminder_count = models.IntegerField(default=0)
+    attempt_number = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.user} → {self.family} ({self.status})"
+
+
+class RelationChangeRequest(models.Model):
+    ACTION_CHOICES = (('modify', 'Modification'), ('delete', 'Suppression'))
+    STATUS_CHOICES = (('pending', 'En attente'), ('accepted', 'Acceptée'), ('rejected', 'Refusée'))
+
+    relation = models.ForeignKey(Relation, on_delete=models.CASCADE, related_name='change_requests')
+    requested_by = models.ForeignKey('User', on_delete=models.CASCADE, related_name='relation_change_requests')
+    action = models.CharField(max_length=10, choices=ACTION_CHOICES)
+    new_relation_type = models.CharField(max_length=20, choices=Relation.RELATION_CHOICES, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class GuestAccess(models.Model):
+    PERMISSION_CHOICES = (
+        ('members', 'Membres'),
+        ('tree', 'Arbre généalogique'),
+        ('timeline', 'Chronologie'),
+        ('feed', 'Fil d\'actualité'),
+        ('media', 'Médiathèque'),
+        ('calendar', 'Calendrier'),
+    )
+
+    guest = models.ForeignKey('User', on_delete=models.CASCADE, related_name='guest_accesses')
+    family = models.ForeignKey(Family, on_delete=models.CASCADE, related_name='guest_accesses')
+    invited_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='sent_invitations')
+    permissions = models.JSONField(default=list)
+    starts_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('guest', 'family')  # un seul accès actif par famille
+
+    def __str__(self):
+        return f"{self.guest} invité chez {self.family} jusqu'au {self.expires_at}"
+
+    def has_permission(self, module):
+        return self.is_active and module in self.permissions
+
+
+class RemovalVote(models.Model):
+    family = models.ForeignKey(Family, on_delete=models.CASCADE, related_name='removal_votes')
+    target_member = models.ForeignKey('User', on_delete=models.CASCADE, related_name='removal_votes_against')
+    initiated_by = models.ForeignKey('User', on_delete=models.CASCADE, related_name='removal_votes_initiated')
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+
+class RemovalVoteEntry(models.Model):
+    vote = models.ForeignKey(RemovalVote, on_delete=models.CASCADE, related_name='entries')
+    voter = models.ForeignKey('User', on_delete=models.CASCADE)
+    approved = models.BooleanField()  # True = approuve la suppression
+    voted_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('vote', 'voter')
+
+
+class DirectAddRequest(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'En attente'),
+        ('accepted', 'Acceptée'),
+        ('rejected', 'Refusée'),
+    )
+    family = models.ForeignKey(Family, on_delete=models.CASCADE, related_name='direct_add_requests')
+    target_user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='received_add_requests')
+    invited_by = models.ForeignKey('User', on_delete=models.SET_NULL, null=True, related_name='sent_add_requests')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('family', 'target_user')
+
+    def __str__(self):
+        return f"{self.target_user} invité dans {self.family} [{self.status}]"

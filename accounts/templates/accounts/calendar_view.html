@@ -8,8 +8,8 @@
     <title>MIFFA — Calendrier</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'global.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
@@ -18,315 +18,315 @@
 
 <body>
 
-    <!-- ─── SIDEBAR ─── -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <a href="{% url 'indexOfAccounts' %}" class="logo">
-                <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
-                <span>MIFFA</span>
-            </a>
-            <button class="sidebar-toggle" onclick="toggleSidebar()">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </div>
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="{% url 'indexOfAccounts' %}" class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+            <span>MIFFA</span>
+        </a>
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
 
-        <div class="sidebar-user">
-            <div class="user-avatar">
-                {% if user.photo %}
-                <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
-                {% else %}
-                <div class="avatar-placeholder">
-                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
-                </div>
-                {% endif %}
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            {% if user.photo %}
+            <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+            {% else %}
+            <div class="avatar-placeholder">
+                {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
             </div>
-            <div class="user-info">
-                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
-                <span class="user-role">{{ user.get_role_display }}</span>
-            </div>
+            {% endif %}
         </div>
+        <div class="user-info">
+            <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+            <span class="user-role">{{ user.get_role_display }}</span>
+        </div>
+    </div>
 
-        <nav class="sidebar-nav">
-            <div class="nav-section-label">Menu principal</div>
-            <a href="{% url 'dashboard' %}" class="nav-item">
-                <i class="fa-solid fa-house"></i>
-                <span>Mon espace</span>
-            </a>
-            <a href="{% url 'members_list' %}" class="nav-item">
-                <i class="fa-solid fa-users"></i>
-                <span>Membres</span>
-            </a>
-            <a href="{% url 'add_relation' %}" class="nav-item">
-        <i class="fa-solid fa-link"></i>
-        <span>Mes relations</span>
-        {% if pending_relation_count %}
-        <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Menu principal</div>
+        <a href="{% url 'dashboard' %}" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Mon espace</span>
+        </a>
+        <a href="{% url 'members_list' %}" class="nav-item">
+            <i class="fa-solid fa-users"></i>
+            <span>Membres</span>
+        </a>
+        <a href="{% url 'add_relation' %}" class="nav-item">
+            <i class="fa-solid fa-link"></i>
+            <span>Mes relations</span>
+            {% if pending_relation_count %}
+            <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
             {{ pending_relation_count }}
         </span>
-        {% endif %}
-    </a>
-            <a href="{% url 'family_tree' %}" class="nav-item">
-                <i class="fa-solid fa-tree"></i>
+            {% endif %}
+        </a>
+        <a href="{% url 'family_tree' %}" class="nav-item">
+            <i class="fa-solid fa-tree"></i>
                 <span>Arbre généalogique</span>
-            </a>
-            <a href="{% url 'timeline_view' %}" class="nav-item">
-                <i class="fa-solid fa-timeline"></i>
-                <span>Chronologie</span>
-            </a>
+        </a>
+        <a href="{% url 'timeline_view' %}" class="nav-item">
+            <i class="fa-solid fa-timeline"></i>
+            <span>Chronologie</span>
+        </a>
 
-            <div class="nav-section-label">Communication</div>
-            <a href="{% url 'news_feed' %}" class="nav-item">
-                <i class="fa-solid fa-newspaper"></i>
-                <span>Fil d'actualité</span>
-            </a>
+        <div class="nav-section-label">Communication</div>
+        <a href="{% url 'news_feed' %}" class="nav-item">
+            <i class="fa-solid fa-newspaper"></i>
+            <span>Fil d'actualité</span>
+        </a>
 
-            <div class="nav-section-label">Contenu</div>
-            <a href="{% url 'media_library' %}" class="nav-item">
-                <i class="fa-solid fa-images"></i>
-                <span>Médiathèque</span>
-            </a>
-            <a href="{% url 'calendar_view' %}" class="nav-item active">
-                <i class="fa-solid fa-calendar-days"></i>
-                <span>Calendrier</span>
-            </a>
-            <a href="{% url 'notifications' %}" class="nav-item">
-                <i class="fa-solid fa-bell"></i>
-                <span>Notifications</span>
-                {% if unread_notif_count %}
-                <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+        <div class="nav-section-label">Contenu</div>
+        <a href="{% url 'media_library' %}" class="nav-item">
+            <i class="fa-solid fa-images"></i>
+            <span>Médiathèque</span>
+        </a>
+        <a href="{% url 'calendar_view' %}" class="nav-item active">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Calendrier</span>
+        </a>
+        <a href="{% url 'notifications' %}" class="nav-item">
+            <i class="fa-solid fa-bell"></i>
+            <span>Notifications</span>
+            {% if unread_notif_count %}
+            <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
                     {{ unread_notif_count }}
                 </span>
-                {% endif %}
-            </a>
-
-            {% if user.role == 'admin' %}
-            <div class="nav-section-label">Administration</div>
-            <a href="{% url 'admin_panel' %}" class="nav-item">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span>Administration</span>
-            </a>
             {% endif %}
-        </nav>
+        </a>
 
-        <div class="sidebar-footer">
-            <a href="{% url 'deconnexion' %}" class="nav-item logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Déconnexion</span>
-            </a>
-        </div>
-    </aside>
-
-    <!-- ─── CONTENU PRINCIPAL ─── -->
-    <main class="main-content">
-
-        <!-- TOPBAR -->
-        <div class="topbar">
-            <div class="topbar-left">
-                <h1>Calendrier</h1>
-                <p>Les événements de <strong>{{ user.family.name }}</strong></p>
-            </div>
-            <button class="btn-new-event" onclick="openModal('eventModal')">
-                <i class="fa-solid fa-plus"></i> Nouvel événement
-            </button>
-        </div>
-
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert-banner alert-{{ message.tags }}">
-                <i class="fa-solid fa-circle-info"></i> {{ message }}
-            </div>
-            {% endfor %}
+        {% if user.role == 'admin' %}
+        <div class="nav-section-label">Administration</div>
+        <a href="{% url 'admin_panel' %}" class="nav-item">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Administration</span>
+        </a>
         {% endif %}
+    </nav>
 
-        <div class="calendar-layout">
+    <div class="sidebar-footer">
+        <a href="{% url 'deconnexion' %}" class="nav-item logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Déconnexion</span>
+        </a>
+    </div>
+</aside>
 
-            <!-- CALENDRIER -->
-            <div class="calendar-card">
-                <div class="calendar-nav">
-                    <a href="?month={{ prev_month }}&year={{ prev_year }}" class="cal-nav-btn">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </a>
-                    <h2>{{ month_name }} {{ year }}</h2>
-                    <a href="?month={{ next_month }}&year={{ next_year }}" class="cal-nav-btn">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </a>
-                </div>
+<!-- ─── CONTENU PRINCIPAL ─── -->
+<main class="main-content">
 
-                <div class="calendar-grid">
-                    <div class="cal-weekday">Lun</div>
-                    <div class="cal-weekday">Mar</div>
-                    <div class="cal-weekday">Mer</div>
-                    <div class="cal-weekday">Jeu</div>
-                    <div class="cal-weekday">Ven</div>
-                    <div class="cal-weekday">Sam</div>
-                    <div class="cal-weekday">Dim</div>
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <h1>Calendrier</h1>
+            <p>Les événements de <strong>{{ user.family.name }}</strong></p>
+        </div>
+        <button class="btn-new-event" onclick="openModal('eventModal')">
+            <i class="fa-solid fa-plus"></i> Nouvel événement
+        </button>
+    </div>
 
-                    {% for day in calendar_days %}
-                    <div class="cal-day {% if not day.in_month %}cal-day-outside{% endif %} {% if day.is_today %}cal-day-today{% endif %}">
-                        <span class="cal-day-number">{{ day.number }}</span>
-                        {% for event in day.events %}
-                        <div class="cal-event cal-event-{{ event.event_type }}" onclick="showEventDetail({{ event.id }})">
-                            {{ event.title|truncatechars:18 }}
-                        </div>
-                        {% endfor %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert-banner alert-{{ message.tags }}">
+        <i class="fa-solid fa-circle-info"></i> {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="calendar-layout">
+
+        <!-- CALENDRIER -->
+        <div class="calendar-card">
+            <div class="calendar-nav">
+                <a href="?month={{ prev_month }}&year={{ prev_year }}" class="cal-nav-btn">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+                <h2>{{ month_name }} {{ year }}</h2>
+                <a href="?month={{ next_month }}&year={{ next_year }}" class="cal-nav-btn">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+            </div>
+
+            <div class="calendar-grid">
+                <div class="cal-weekday">Lun</div>
+                <div class="cal-weekday">Mar</div>
+                <div class="cal-weekday">Mer</div>
+                <div class="cal-weekday">Jeu</div>
+                <div class="cal-weekday">Ven</div>
+                <div class="cal-weekday">Sam</div>
+                <div class="cal-weekday">Dim</div>
+
+                {% for day in calendar_days %}
+                <div class="cal-day {% if not day.in_month %}cal-day-outside{% endif %} {% if day.is_today %}cal-day-today{% endif %}">
+                    <span class="cal-day-number">{{ day.number }}</span>
+                    {% for event in day.events %}
+                    <div class="cal-event cal-event-{{ event.event_type }}" onclick="showEventDetail({{ event.id }})">
+                        {{ event.title|truncatechars:18 }}
                     </div>
                     {% endfor %}
                 </div>
-            </div>
-
-            <!-- ÉVÉNEMENTS À VENIR -->
-            <aside class="upcoming-sidebar">
-                <h4><i class="fa-solid fa-clock"></i> Événements à venir</h4>
-                {% if upcoming_events %}
-                {% for event in upcoming_events %}
-                <div class="upcoming-event-card" onclick="showEventDetail({{ event.id }})">
-                    <div class="upcoming-event-date">
-                        <span class="upcoming-day">{{ event.date|date:"d" }}</span>
-                        <span class="upcoming-month">{{ event.date|date:"M" }}</span>
-                    </div>
-                    <div class="upcoming-event-info">
-                        <h5>{{ event.title }}</h5>
-                        <span><i class="fa-solid fa-clock"></i> {{ event.time|default:"Toute la journée" }}</span>
-                        {% if event.location %}
-                        <span><i class="fa-solid fa-location-dot"></i> {{ event.location }}</span>
-                        {% endif %}
-                    </div>
-                </div>
                 {% endfor %}
-                {% else %}
-                <p class="widget-empty">Aucun événement à venir.</p>
-                {% endif %}
-            </aside>
-
-        </div>
-
-    </main>
-
-    <!-- ─── MODAL NOUVEL ÉVÉNEMENT ─── -->
-    <div class="modal-overlay" id="eventModal" onclick="closeModal('eventModal')">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3>Créer un événement</h3>
-                <button onclick="closeModal('eventModal')"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <form method="POST" action="{% url 'create_event' %}" class="modal-form">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label>Titre <span class="required">*</span></label>
-                    <input type="text" name="title" placeholder="Ex: Anniversaire de Mamie" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Date <span class="required">*</span></label>
-                        <input type="date" name="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Heure</label>
-                        <input type="time" name="time">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Type d'événement</label>
-                    <select name="event_type">
-                        <option value="anniversaire">Anniversaire</option>
-                        <option value="reunion">Réunion de famille</option>
-                        <option value="fete">Fête</option>
-                        <option value="autre">Autre</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Lieu</label>
-                    <input type="text" name="location" placeholder="Ex: Chez Papa et Maman">
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea name="description" rows="3" placeholder="Détails de l'événement..."></textarea>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeModal('eventModal')">Annuler</button>
-                    <button type="submit" class="btn-save">
-                        <i class="fa-solid fa-check"></i> Créer l'événement
-                    </button>
-                </div>
-            </form>
         </div>
+
+        <!-- ÉVÉNEMENTS À VENIR -->
+        <aside class="upcoming-sidebar">
+            <h4><i class="fa-solid fa-clock"></i> Événements à venir</h4>
+            {% if upcoming_events %}
+            {% for event in upcoming_events %}
+            <div class="upcoming-event-card" onclick="showEventDetail({{ event.id }})">
+                <div class="upcoming-event-date">
+                    <span class="upcoming-day">{{ event.date|date:"d" }}</span>
+                    <span class="upcoming-month">{{ event.date|date:"M" }}</span>
+                </div>
+                <div class="upcoming-event-info">
+                    <h5>{{ event.title }}</h5>
+                    <span><i class="fa-solid fa-clock"></i> {{ event.time|default:"Toute la journée" }}</span>
+                    {% if event.location %}
+                    <span><i class="fa-solid fa-location-dot"></i> {{ event.location }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="widget-empty">Aucun événement à venir.</p>
+            {% endif %}
+        </aside>
+
     </div>
 
-    <!-- ─── MODAL DÉTAIL ÉVÉNEMENT ─── -->
-    <div class="modal-overlay" id="eventDetailModal" onclick="closeModal('eventDetailModal')">
-        <div class="modal modal-small" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 id="detailTitle"></h3>
-                <button onclick="closeModal('eventDetailModal')"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="modal-form" id="detailContent"></div>
+</main>
+
+<!-- ─── MODAL NOUVEL ÉVÉNEMENT ─── -->
+<div class="modal-overlay" id="eventModal" onclick="closeModal('eventModal')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Créer un événement</h3>
+            <button onclick="closeModal('eventModal')"><i class="fa-solid fa-xmark"></i></button>
         </div>
-    </div>
-
-    <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-            document.querySelector('.main-content').classList.toggle('expanded');
-        }
-        function openModal(id) {
-            document.getElementById(id).classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('open');
-            document.body.style.overflow = '';
-        }
-
-        const eventsData = {{ events_json|safe }};
-
-        function showEventDetail(eventId) {
-            const ev = eventsData.find(e => e.id === eventId);
-            if (!ev) return;
-
-            document.getElementById('detailTitle').textContent = ev.title;
-            document.getElementById('detailContent').innerHTML = `
-                <p class="detail-row"><i class="fa-solid fa-calendar"></i> ${ev.date_display}</p>
-                ${ev.time ? `<p class="detail-row"><i class="fa-solid fa-clock"></i> ${ev.time}</p>` : ''}
-                ${ev.location ? `<p class="detail-row"><i class="fa-solid fa-location-dot"></i> ${ev.location}</p>` : ''}
-                ${ev.description ? `<p class="detail-description">${ev.description}</p>` : ''}
-                <p class="detail-row"><i class="fa-solid fa-user"></i> Créé par ${ev.created_by}</p>
-
-                <div class="rsvp-section">
-                    <p class="rsvp-label">Votre présence :</p>
-                    <form method="POST" action="/accounts/calendar/event/${eventId}/rsvp/">
-                        <input type="hidden" name="csrfmiddlewaretoken" value="${document.querySelector('[name=csrfmiddlewaretoken]').value}">
-                        <div class="rsvp-buttons">
-                            <button type="submit" name="status" value="yes" class="rsvp-btn ${ev.my_rsvp === 'yes' ? 'rsvp-active-yes' : ''}">
-                                <i class="fa-solid fa-check"></i> Présent
-                            </button>
-                            <button type="submit" name="status" value="no" class="rsvp-btn ${ev.my_rsvp === 'no' ? 'rsvp-active-no' : ''}">
-                                <i class="fa-solid fa-xmark"></i> Absent
-                            </button>
-                        </div>
-                    </form>
+        <form method="POST" action="{% url 'create_event' %}" class="modal-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Titre <span class="required">*</span></label>
+                <input type="text" name="title" placeholder="Ex: Anniversaire de Mamie" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Date <span class="required">*</span></label>
+                    <input type="date" name="date" required>
                 </div>
+                <div class="form-group">
+                    <label>Heure</label>
+                    <input type="time" name="time">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Type d'événement</label>
+                <select name="event_type">
+                    <option value="anniversaire">Anniversaire</option>
+                    <option value="reunion">Réunion de famille</option>
+                    <option value="fete">Fête</option>
+                    <option value="autre">Autre</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Lieu</label>
+                <input type="text" name="location" placeholder="Ex: Chez Papa et Maman">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="3" placeholder="Détails de l'événement..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal('eventModal')">Annuler</button>
+                <button type="submit" class="btn-save">
+                    <i class="fa-solid fa-check"></i> Créer l'événement
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
-                ${ev.attendees && ev.attendees.length ? `
-                <div class="attendees-list">
-                    <p class="rsvp-label">Participants confirmés (${ev.attendees.length})</p>
-                    ${ev.attendees.map(a => `<span class="attendee-chip">${a}</span>`).join('')}
-                </div>` : ''}
+<!-- ─── MODAL DÉTAIL ÉVÉNEMENT ─── -->
+<div class="modal-overlay" id="eventDetailModal" onclick="closeModal('eventDetailModal')">
+    <div class="modal modal-small" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3 id="detailTitle"></h3>
+            <button onclick="closeModal('eventDetailModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-form" id="detailContent"></div>
+    </div>
+</div>
 
-                ${ev.can_delete ? `
-                <form method="POST" action="/accounts/calendar/event/${eventId}/delete/" style="margin-top:16px"
-                    onsubmit="return confirm('Supprimer cet événement ?');">
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        document.querySelector('.main-content').classList.toggle('expanded');
+    }
+    function openModal(id) {
+        document.getElementById(id).classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    const eventsData = {{ events_json|safe }};
+
+    function showEventDetail(eventId) {
+        const ev = eventsData.find(e => e.id === eventId);
+        if (!ev) return;
+
+        document.getElementById('detailTitle').textContent = ev.title;
+        document.getElementById('detailContent').innerHTML = `
+            <p class="detail-row"><i class="fa-solid fa-calendar"></i> ${ev.date_display}</p>
+            ${ev.time ? `<p class="detail-row"><i class="fa-solid fa-clock"></i> ${ev.time}</p>` : ''}
+            ${ev.location ? `<p class="detail-row"><i class="fa-solid fa-location-dot"></i> ${ev.location}</p>` : ''}
+            ${ev.description ? `<p class="detail-description">${ev.description}</p>` : ''}
+            <p class="detail-row"><i class="fa-solid fa-user"></i> Créé par ${ev.created_by}</p>
+
+            <div class="rsvp-section">
+                <p class="rsvp-label">Votre présence :</p>
+                <form method="POST" action="/accounts/calendar/event/${eventId}/rsvp/">
                     <input type="hidden" name="csrfmiddlewaretoken" value="${document.querySelector('[name=csrfmiddlewaretoken]').value}">
-                    <button type="submit" class="btn-danger" style="width:100%">
-                        <i class="fa-solid fa-trash"></i> Supprimer l'événement
-                    </button>
-                </form>` : ''}
-            `;
-            openModal('eventDetailModal');
-        }
-    </script>
+                    <div class="rsvp-buttons">
+                        <button type="submit" name="status" value="yes" class="rsvp-btn ${ev.my_rsvp === 'yes' ? 'rsvp-active-yes' : ''}">
+                            <i class="fa-solid fa-check"></i> Présent
+                        </button>
+                        <button type="submit" name="status" value="no" class="rsvp-btn ${ev.my_rsvp === 'no' ? 'rsvp-active-no' : ''}">
+                            <i class="fa-solid fa-xmark"></i> Absent
+                        </button>
+                    </div>
+                </form>
+            </div>
 
-    <!-- Token CSRF caché pour le JS -->
-    <form style="display:none">{% csrf_token %}</form>
+            ${ev.attendees && ev.attendees.length ? `
+            <div class="attendees-list">
+                <p class="rsvp-label">Participants confirmés (${ev.attendees.length})</p>
+                ${ev.attendees.map(a => `<span class="attendee-chip">${a}</span>`).join('')}
+            </div>` : ''}
+
+            ${ev.can_delete ? `
+            <form method="POST" action="/accounts/calendar/event/${eventId}/delete/" style="margin-top:16px"
+                onsubmit="return confirm('Supprimer cet événement ?');">
+                <input type="hidden" name="csrfmiddlewaretoken" value="${document.querySelector('[name=csrfmiddlewaretoken]').value}">
+                <button type="submit" class="btn-danger" style="width:100%">
+                    <i class="fa-solid fa-trash"></i> Supprimer l'événement
+                </button>
+            </form>` : ''}
+        `;
+        openModal('eventDetailModal');
+    }
+</script>
+
+<!-- Token CSRF caché pour le JS -->
+<form style="display:none">{% csrf_token %}</form>
 
 </body>
 

@@ -8,8 +8,8 @@
     <title>MIFFA — {{ album.title }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'global.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
@@ -18,243 +18,244 @@
 
 <body>
 
-    <!-- ─── SIDEBAR ─── -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <a href="{% url 'indexOfAccounts' %}" class="logo">
-                <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
-                <span>MIFFA</span>
-            </a>
-            <button class="sidebar-toggle" onclick="toggleSidebar()">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </div>
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="{% url 'indexOfAccounts' %}" class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+            <span>MIFFA</span>
+        </a>
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
 
-        <div class="sidebar-user">
-            <div class="user-avatar">
-                {% if user.photo %}
-                <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
-                {% else %}
-                <div class="avatar-placeholder">
-                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
-                </div>
-                {% endif %}
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            {% if user.photo %}
+            <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+            {% else %}
+            <div class="avatar-placeholder">
+                {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
             </div>
-            <div class="user-info">
-                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
-                <span class="user-role">{{ user.get_role_display }}</span>
-            </div>
-        </div>
-
-        <nav class="sidebar-nav">
-            <div class="nav-section-label">Menu principal</div>
-            <a href="{% url 'dashboard' %}" class="nav-item">
-                <i class="fa-solid fa-house"></i>
-                <span>Mon espace</span>
-            </a>
-            <a href="{% url 'members_list' %}" class="nav-item">
-                <i class="fa-solid fa-users"></i>
-                <span>Membres</span>
-            </a>
-            <a href="{% url 'family_tree' %}" class="nav-item">
-                <i class="fa-solid fa-tree"></i>
-                <span>Arbre généalogique</span>
-            </a>
-            <a href="{% url 'timeline_view' %}" class="nav-item">
-                <i class="fa-solid fa-timeline"></i>
-                <span>Chronologie</span>
-            </a>
-
-            <div class="nav-section-label">Communication</div>
-            <a href="{% url 'news_feed' %}" class="nav-item">
-                <i class="fa-solid fa-newspaper"></i>
-                <span>Fil d'actualité</span>
-            </a>
-
-            <div class="nav-section-label">Contenu</div>
-            <a href="{% url 'media_library' %}" class="nav-item active">
-                <i class="fa-solid fa-images"></i>
-                <span>Médiathèque</span>
-            </a>
-            <a href="{% url 'calendar_view' %}" class="nav-item">
-                <i class="fa-solid fa-calendar-days"></i>
-                <span>Calendrier</span>
-            </a>
-
-            {% if user.role == 'admin' %}
-            <div class="nav-section-label">Administration</div>
-            <a href="{% url 'admin_panel' %}" class="nav-item">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span>Administration</span>
-            </a>
             {% endif %}
-        </nav>
-
-        <div class="sidebar-footer">
-            <a href="{% url 'deconnexion' %}" class="nav-item logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Déconnexion</span>
-            </a>
         </div>
-    </aside>
-
-    <!-- ─── CONTENU PRINCIPAL ─── -->
-    <main class="main-content">
-
-        <!-- TOPBAR -->
-        <div class="topbar">
-            <div class="topbar-left">
-                <a href="{% url 'media_library' %}" class="back-link">
-                    <i class="fa-solid fa-arrow-left"></i> Retour à la médiathèque
-                </a>
-                <h1>{{ album.title }}</h1>
-                <p>{{ album.description|default:"" }}</p>
-            </div>
-            <div class="album-actions">
-                <button class="btn-new-event" onclick="openModal('uploadModal')">
-                    <i class="fa-solid fa-upload"></i> Ajouter des fichiers
-                </button>
-                {% if album.created_by == user or user.role == 'admin' %}
-                <form method="POST" action="{% url 'delete_album' album.id %}"
-                    onsubmit="return confirm('Supprimer cet album et tout son contenu ?');">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-danger-outline"><i class="fa-solid fa-trash"></i></button>
-                </form>
-                {% endif %}
-            </div>
+        <div class="user-info">
+            <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+            <span class="user-role">{{ user.get_role_display }}</span>
         </div>
+    </div>
 
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert-banner alert-{{ message.tags }}">
-                <i class="fa-solid fa-circle-info"></i> {{ message }}
-            </div>
-            {% endfor %}
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Menu principal</div>
+        <a href="{% url 'dashboard' %}" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Mon espace</span>
+        </a>
+        <a href="{% url 'members_list' %}" class="nav-item">
+            <i class="fa-solid fa-users"></i>
+            <span>Membres</span>
+        </a>
+        <a href="{% url 'family_tree' %}" class="nav-item">
+            <i class="fa-solid fa-tree"></i>
+            <span>Arbre généalogique</span>
+        </a>
+        <a href="{% url 'timeline_view' %}" class="nav-item">
+            <i class="fa-solid fa-timeline"></i>
+            <span>Chronologie</span>
+        </a>
+
+        <div class="nav-section-label">Communication</div>
+        <a href="{% url 'news_feed' %}" class="nav-item">
+            <i class="fa-solid fa-newspaper"></i>
+            <span>Fil d'actualité</span>
+        </a>
+
+        <div class="nav-section-label">Contenu</div>
+        <a href="{% url 'media_library' %}" class="nav-item active">
+            <i class="fa-solid fa-images"></i>
+            <span>Médiathèque</span>
+        </a>
+        <a href="{% url 'calendar_view' %}" class="nav-item">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Calendrier</span>
+        </a>
+
+        {% if user.role == 'admin' %}
+        <div class="nav-section-label">Administration</div>
+        <a href="{% url 'admin_panel' %}" class="nav-item">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Administration</span>
+        </a>
         {% endif %}
+    </nav>
 
-        <!-- GALERIE -->
-        {% if media_items %}
-        <div class="media-grid">
-            {% for item in media_items %}
-            <div class="media-item" onclick="openViewer({{ item.id }})">
-                {% if item.media_type == 'image' %}
-                    <img src="{{ item.file.url }}" alt="">
-                {% elif item.media_type == 'video' %}
-                    <div class="media-video-thumb">
-                        <i class="fa-solid fa-play"></i>
-                    </div>
-                {% else %}
-                    <div class="media-doc-thumb">
-                        <i class="fa-solid fa-file-lines"></i>
-                        <span>{{ item.file.name|slice:"-12:" }}</span>
-                    </div>
-                {% endif %}
-                <div class="media-item-overlay">
-                    <span><i class="fa-solid fa-user"></i> {{ item.uploaded_by.first_name }}</span>
-                </div>
-            </div>
-            {% endfor %}
+    <div class="sidebar-footer">
+        <a href="{% url 'deconnexion' %}" class="nav-item logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Déconnexion</span>
+        </a>
+    </div>
+</aside>
+
+<!-- ─── CONTENU PRINCIPAL ─── -->
+<main class="main-content">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <a href="{% url 'media_library' %}" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Retour à la médiathèque
+            </a>
+            <h1>{{ album.title }}</h1>
+            <p>{{ album.description|default:"" }}</p>
         </div>
-        {% else %}
-        <div class="empty-state">
-            <i class="fa-solid fa-photo-film"></i>
-            <p>Aucun fichier dans cet album pour le moment.</p>
-            <button class="btn-submit" style="width:auto; display:inline-flex; margin-top:14px;" onclick="openModal('uploadModal')">
+        <div class="album-actions">
+            <button class="btn-new-event" onclick="openModal('uploadModal')">
                 <i class="fa-solid fa-upload"></i> Ajouter des fichiers
             </button>
-        </div>
-        {% endif %}
-
-    </main>
-
-    <!-- ─── MODAL UPLOAD ─── -->
-    <div class="modal-overlay" id="uploadModal" onclick="closeModal('uploadModal')">
-        <div class="modal modal-small" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3>Ajouter des fichiers</h3>
-                <button onclick="closeModal('uploadModal')"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form method="POST" action="{% url 'upload_media' album.id %}" enctype="multipart/form-data" class="modal-form">
+            {% if album.created_by == user or user.role == 'admin' %}
+            <form method="POST" action="{% url 'delete_album' album.id %}"
+                  onsubmit="return confirm('Supprimer cet album et tout son contenu ?');">
                 {% csrf_token %}
-                <div class="file-upload">
-                    <input type="file" name="files" id="mediaFilesInput" accept="image/*,video/*,.pdf,.doc,.docx" multiple
-                        onchange="updateFileLabel(this)">
-                    <div class="file-upload-label">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <span id="filesLabel">Photos, vidéos ou documents</span>
-                    </div>
-                </div>
-                <p class="settings-note">
-                    <i class="fa-solid fa-circle-info"></i>
-                    Vous pouvez sélectionner plusieurs fichiers à la fois.
-                </p>
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeModal('uploadModal')">Annuler</button>
-                    <button type="submit" class="btn-save">
-                        <i class="fa-solid fa-upload"></i> Envoyer
-                    </button>
-                </div>
+                <button type="submit" class="btn-danger-outline"><i class="fa-solid fa-trash"></i></button>
             </form>
+            {% endif %}
         </div>
     </div>
 
-    <!-- ─── VIEWER PLEIN ÉCRAN ─── -->
-    <div class="media-viewer" id="mediaViewer" onclick="closeViewer()">
-        <button class="viewer-close" onclick="closeViewer()"><i class="fa-solid fa-xmark"></i></button>
-        <div class="viewer-content" id="viewerContent" onclick="event.stopPropagation()"></div>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert-banner alert-{{ message.tags }}">
+        <i class="fa-solid fa-circle-info"></i> {{ message }}
     </div>
+    {% endfor %}
+    {% endif %}
 
-    <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-            document.querySelector('.main-content').classList.toggle('expanded');
-        }
-        function openModal(id) {
-            document.getElementById(id).classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('open');
-            document.body.style.overflow = '';
-        }
-        function updateFileLabel(input) {
-            const label = document.getElementById('filesLabel');
-            label.textContent = input.files.length > 1
-                ? `${input.files.length} fichiers sélectionnés`
-                : (input.files[0] ? input.files[0].name : 'Photos, vidéos ou documents');
-        }
+    <!-- GALERIE -->
+    {% if media_items %}
+    <div class="media-grid">
+        {% for item in media_items %}
+        <div class="media-item" onclick="openViewer({{ item.id }})">
+            {% if item.media_type == 'image' %}
+            <img src="{{ item.file.url }}" alt="">
+            {% elif item.media_type == 'video' %}
+            <div class="media-video-thumb">
+                <i class="fa-solid fa-play"></i>
+            </div>
+            {% else %}
+            <div class="media-doc-thumb">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>{{ item.file.name|slice:"-12:" }}</span>
+            </div>
+            {% endif %}
+            <div class="media-item-overlay">
+                <span><i class="fa-solid fa-user"></i> {{ item.uploaded_by.first_name }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fa-solid fa-photo-film"></i>
+        <p>Aucun fichier dans cet album pour le moment.</p>
+        <button class="btn-submit" style="width:auto; display:inline-flex; margin-top:14px;"
+                onclick="openModal('uploadModal')">
+            <i class="fa-solid fa-upload"></i> Ajouter des fichiers
+        </button>
+    </div>
+    {% endif %}
 
-        const mediaData = {{ media_json|safe }};
+</main>
 
-        function openViewer(itemId) {
-            const item = mediaData.find(m => m.id === itemId);
-            if (!item) return;
-            const content = document.getElementById('viewerContent');
+<!-- ─── MODAL UPLOAD ─── -->
+<div class="modal-overlay" id="uploadModal" onclick="closeModal('uploadModal')">
+    <div class="modal modal-small" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Ajouter des fichiers</h3>
+            <button onclick="closeModal('uploadModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form method="POST" action="{% url 'upload_media' album.id %}" enctype="multipart/form-data" class="modal-form">
+            {% csrf_token %}
+            <div class="file-upload">
+                <input type="file" name="files" id="mediaFilesInput" accept="image/*,video/*,.pdf,.doc,.docx" multiple
+                       onchange="updateFileLabel(this)">
+                <div class="file-upload-label">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span id="filesLabel">Photos, vidéos ou documents</span>
+                </div>
+            </div>
+            <p class="settings-note">
+                <i class="fa-solid fa-circle-info"></i>
+                Vous pouvez sélectionner plusieurs fichiers à la fois.
+            </p>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal('uploadModal')">Annuler</button>
+                <button type="submit" class="btn-save">
+                    <i class="fa-solid fa-upload"></i> Envoyer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
-            if (item.type === 'image') {
-                content.innerHTML = `<img src="${item.url}" alt="">`;
-            } else if (item.type === 'video') {
-                content.innerHTML = `<video src="${item.url}" controls autoplay></video>`;
-            } else {
-                content.innerHTML = `
-                    <div class="viewer-doc">
-                        <i class="fa-solid fa-file-lines"></i>
-                        <p>${item.name}</p>
-                        <a href="${item.url}" target="_blank" class="btn-save">
-                            <i class="fa-solid fa-download"></i> Télécharger
-                        </a>
-                    </div>`;
-            }
-            document.getElementById('mediaViewer').classList.add('open');
-            document.body.style.overflow = 'hidden';
+<!-- ─── VIEWER PLEIN ÉCRAN ─── -->
+<div class="media-viewer" id="mediaViewer" onclick="closeViewer()">
+    <button class="viewer-close" onclick="closeViewer()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="viewer-content" id="viewerContent" onclick="event.stopPropagation()"></div>
+</div>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        document.querySelector('.main-content').classList.toggle('expanded');
+    }
+    function openModal(id) {
+        document.getElementById(id).classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    function updateFileLabel(input) {
+        const label = document.getElementById('filesLabel');
+        label.textContent = input.files.length > 1
+            ? `${input.files.length} fichiers sélectionnés`
+            : (input.files[0] ? input.files[0].name : 'Photos, vidéos ou documents');
+    }
+
+    const mediaData = {{ media_json|safe }};
+
+    function openViewer(itemId) {
+        const item = mediaData.find(m => m.id === itemId);
+        if (!item) return;
+        const content = document.getElementById('viewerContent');
+
+        if (item.type === 'image') {
+            content.innerHTML = `<img src="${item.url}" alt="">`;
+        } else if (item.type === 'video') {
+            content.innerHTML = `<video src="${item.url}" controls autoplay></video>`;
+        } else {
+            content.innerHTML = `
+                <div class="viewer-doc">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <p>${item.name}</p>
+                    <a href="${item.url}" target="_blank" class="btn-save">
+                        <i class="fa-solid fa-download"></i> Télécharger
+                    </a>
+                </div>`;
         }
+        document.getElementById('mediaViewer').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
 
-        function closeViewer() {
-            document.getElementById('mediaViewer').classList.remove('open');
-            document.getElementById('viewerContent').innerHTML = '';
-            document.body.style.overflow = '';
-        }
-    </script>
+    function closeViewer() {
+        document.getElementById('mediaViewer').classList.remove('open');
+        document.getElementById('viewerContent').innerHTML = '';
+        document.body.style.overflow = '';
+    }
+</script>
 
 </body>
 

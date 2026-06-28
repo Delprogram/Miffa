@@ -8,8 +8,8 @@
     <title>MIFFA — Chronologie</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'global.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
@@ -18,268 +18,269 @@
 
 <body>
 
-    <!-- ─── SIDEBAR ─── -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <a href="{% url 'indexOfAccounts' %}" class="logo">
-                <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
-                <span>MIFFA</span>
-            </a>
-            <button class="sidebar-toggle" onclick="toggleSidebar()">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </div>
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="{% url 'indexOfAccounts' %}" class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+            <span>MIFFA</span>
+        </a>
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
 
-        <div class="sidebar-user">
-            <div class="user-avatar">
-                {% if user.photo %}
-                <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
-                {% else %}
-                <div class="avatar-placeholder">
-                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
-                </div>
-                {% endif %}
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            {% if user.photo %}
+            <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+            {% else %}
+            <div class="avatar-placeholder">
+                {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
             </div>
-            <div class="user-info">
-                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
-                <span class="user-role">{{ user.get_role_display }}</span>
-            </div>
-        </div>
-
-        <nav class="sidebar-nav">
-            <div class="nav-section-label">Menu principal</div>
-            <a href="{% url 'dashboard' %}" class="nav-item">
-                <i class="fa-solid fa-house"></i>
-                <span>Mon espace</span>
-            </a>
-            <a href="{% url 'members_list' %}" class="nav-item">
-                <i class="fa-solid fa-users"></i>
-                <span>Membres</span>
-            </a>
-            <a href="{% url 'family_tree' %}" class="nav-item">
-                <i class="fa-solid fa-tree"></i>
-                <span>Arbre généalogique</span>
-            </a>
-            <a href="{% url 'timeline_view' %}" class="nav-item active">
-                <i class="fa-solid fa-timeline"></i>
-                <span>Chronologie</span>
-            </a>
-
-            <div class="nav-section-label">Communication</div>
-            <a href="{% url 'news_feed' %}" class="nav-item">
-                <i class="fa-solid fa-newspaper"></i>
-                <span>Fil d'actualité</span>
-            </a>
-
-            <div class="nav-section-label">Contenu</div>
-            <a href="{% url 'media_library' %}" class="nav-item">
-                <i class="fa-solid fa-images"></i>
-                <span>Médiathèque</span>
-            </a>
-            <a href="{% url 'calendar_view' %}" class="nav-item">
-                <i class="fa-solid fa-calendar-days"></i>
-                <span>Calendrier</span>
-            </a>
-
-            {% if user.role == 'admin' %}
-            <div class="nav-section-label">Administration</div>
-            <a href="{% url 'admin_panel' %}" class="nav-item">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span>Administration</span>
-            </a>
             {% endif %}
-        </nav>
-
-        <div class="sidebar-footer">
-            <a href="{% url 'deconnexion' %}" class="nav-item logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Déconnexion</span>
-            </a>
         </div>
-    </aside>
-
-    <!-- ─── CONTENU PRINCIPAL ─── -->
-    <main class="main-content">
-
-        <!-- TOPBAR -->
-        <div class="topbar">
-            <div class="topbar-left">
-                <h1>Chronologie</h1>
-                <p>L'histoire de <strong>{{ user.family.name }}</strong>, au fil du temps</p>
-            </div>
-            <button class="btn-new-event" onclick="openModal('timelineModal')">
-                <i class="fa-solid fa-plus"></i> Ajouter un événement
-            </button>
-        </div>
-
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert-banner alert-{{ message.tags }}">
-                <i class="fa-solid fa-circle-info"></i> {{ message }}
-            </div>
-            {% endfor %}
-        {% endif %}
-
-        <!-- FILTRES -->
-        <div class="timeline-filters">
-            <button class="filter-btn active" data-filter="all" onclick="setTimelineFilter('all', this)">Tout</button>
-            <button class="filter-btn" data-filter="naissance" onclick="setTimelineFilter('naissance', this)">
-                <i class="fa-solid fa-baby"></i> Naissances
-            </button>
-            <button class="filter-btn" data-filter="mariage" onclick="setTimelineFilter('mariage', this)">
-                <i class="fa-solid fa-rings-wedding"></i> Mariages
-            </button>
-            <button class="filter-btn" data-filter="diplome" onclick="setTimelineFilter('diplome', this)">
-                <i class="fa-solid fa-graduation-cap"></i> Diplômes
-            </button>
-            <button class="filter-btn" data-filter="demenagement" onclick="setTimelineFilter('demenagement', this)">
-                <i class="fa-solid fa-truck-moving"></i> Déménagements
-            </button>
-            <button class="filter-btn" data-filter="autre" onclick="setTimelineFilter('autre', this)">
-                <i class="fa-solid fa-star"></i> Autres
-            </button>
-        </div>
-
-        {% if timeline_groups %}
-        <!-- TIMELINE -->
-        <div class="timeline-wrapper">
-            <div class="timeline-line"></div>
-
-            {% for group in timeline_groups %}
-            <div class="timeline-year-group">
-                <div class="timeline-year-marker">
-                    <span>{{ group.year }}</span>
-                </div>
-
-                {% for event in group.events %}
-                <div class="timeline-entry timeline-entry-{{ event.side }}" data-type="{{ event.event_type }}">
-                    <div class="timeline-dot timeline-dot-{{ event.event_type }}">
-                        <i class="fa-solid {{ event.icon }}"></i>
-                    </div>
-                    <div class="timeline-card">
-                        <div class="timeline-card-header">
-                            {% if event.member.photo %}
-                                <img src="{{ event.member.photo.url }}" alt="" class="timeline-avatar">
-                            {% else %}
-                                <div class="timeline-avatar-placeholder">
-                                    {{ event.member.first_name|first|upper }}{{ event.member.last_name|first|upper }}
-                                </div>
-                            {% endif %}
-                            <div>
-                                <h4>{{ event.title }}</h4>
-                                <span class="timeline-date">{{ event.date|date:"d F Y" }}</span>
-                            </div>
-                            {% if event.can_delete %}
-                            <form method="POST" action="{% url 'delete_timeline_event' event.id %}"
-                                onsubmit="return confirm('Supprimer cet événement ?');" class="timeline-delete-form">
-                                {% csrf_token %}
-                                <button type="submit"><i class="fa-solid fa-trash"></i></button>
-                            </form>
-                            {% endif %}
-                        </div>
-                        {% if event.description %}
-                        <p class="timeline-description">{{ event.description }}</p>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="empty-state">
-            <i class="fa-solid fa-timeline"></i>
-            <p>Aucun événement dans la chronologie pour le moment.</p>
-            <button class="btn-submit" style="width:auto; display:inline-flex; margin-top:14px;" onclick="openModal('timelineModal')">
-                <i class="fa-solid fa-plus"></i> Ajouter le premier événement
-            </button>
-        </div>
-        {% endif %}
-
-    </main>
-
-    <!-- ─── MODAL NOUVEL ÉVÉNEMENT ─── -->
-    <div class="modal-overlay" id="timelineModal" onclick="closeModal('timelineModal')">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3>Ajouter à la chronologie</h3>
-                <button onclick="closeModal('timelineModal')"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form method="POST" action="{% url 'create_timeline_event' %}" class="modal-form">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label>Concerne quel membre ? <span class="required">*</span></label>
-                    <select name="member_id" required>
-                        <option value="">-- Choisissez --</option>
-                        {% for member in family_members %}
-                        <option value="{{ member.id }}">{{ member.first_name }} {{ member.last_name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Titre de l'événement <span class="required">*</span></label>
-                    <input type="text" name="title" placeholder="Ex: Naissance de Léo" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Date <span class="required">*</span></label>
-                        <input type="date" name="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Type <span class="required">*</span></label>
-                        <select name="event_type" required>
-                            <option value="naissance">Naissance</option>
-                            <option value="mariage">Mariage</option>
-                            <option value="diplome">Diplôme</option>
-                            <option value="demenagement">Déménagement</option>
-                            <option value="deces">Décès</option>
-                            <option value="autre">Autre</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea name="description" rows="3" placeholder="Détails sur cet événement..."></textarea>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeModal('timelineModal')">Annuler</button>
-                    <button type="submit" class="btn-save">
-                        <i class="fa-solid fa-check"></i> Ajouter
-                    </button>
-                </div>
-            </form>
+        <div class="user-info">
+            <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+            <span class="user-role">{{ user.get_role_display }}</span>
         </div>
     </div>
 
-    <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-            document.querySelector('.main-content').classList.toggle('expanded');
-        }
-        function openModal(id) {
-            document.getElementById(id).classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('open');
-            document.body.style.overflow = '';
-        }
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Menu principal</div>
+        <a href="{% url 'dashboard' %}" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Mon espace</span>
+        </a>
+        <a href="{% url 'members_list' %}" class="nav-item">
+            <i class="fa-solid fa-users"></i>
+            <span>Membres</span>
+        </a>
+        <a href="{% url 'family_tree' %}" class="nav-item">
+            <i class="fa-solid fa-tree"></i>
+            <span>Arbre généalogique</span>
+        </a>
+        <a href="{% url 'timeline_view' %}" class="nav-item active">
+            <i class="fa-solid fa-timeline"></i>
+            <span>Chronologie</span>
+        </a>
 
-        function setTimelineFilter(filter, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        <div class="nav-section-label">Communication</div>
+        <a href="{% url 'news_feed' %}" class="nav-item">
+            <i class="fa-solid fa-newspaper"></i>
+            <span>Fil d'actualité</span>
+        </a>
 
-            document.querySelectorAll('.timeline-entry').forEach(entry => {
-                entry.style.display = (filter === 'all' || entry.dataset.type === filter) ? 'flex' : 'none';
-            });
+        <div class="nav-section-label">Contenu</div>
+        <a href="{% url 'media_library' %}" class="nav-item">
+            <i class="fa-solid fa-images"></i>
+            <span>Médiathèque</span>
+        </a>
+        <a href="{% url 'calendar_view' %}" class="nav-item">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Calendrier</span>
+        </a>
 
-            document.querySelectorAll('.timeline-year-group').forEach(group => {
-                const visibleEntries = group.querySelectorAll('.timeline-entry[style="display: flex;"], .timeline-entry:not([style])');
-                const anyVisible = Array.from(group.querySelectorAll('.timeline-entry')).some(e => e.style.display !== 'none');
-                group.style.display = anyVisible ? 'block' : 'none';
-            });
-        }
-    </script>
+        {% if user.role == 'admin' %}
+        <div class="nav-section-label">Administration</div>
+        <a href="{% url 'admin_panel' %}" class="nav-item">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Administration</span>
+        </a>
+        {% endif %}
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="{% url 'deconnexion' %}" class="nav-item logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Déconnexion</span>
+        </a>
+    </div>
+</aside>
+
+<!-- ─── CONTENU PRINCIPAL ─── -->
+<main class="main-content">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <h1>Chronologie</h1>
+            <p>L'histoire de <strong>{{ user.family.name }}</strong>, au fil du temps</p>
+        </div>
+        <button class="btn-new-event" onclick="openModal('timelineModal')">
+            <i class="fa-solid fa-plus"></i> Ajouter un événement
+        </button>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert-banner alert-{{ message.tags }}">
+        <i class="fa-solid fa-circle-info"></i> {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- FILTRES -->
+    <div class="timeline-filters">
+        <button class="filter-btn active" data-filter="all" onclick="setTimelineFilter('all', this)">Tout</button>
+        <button class="filter-btn" data-filter="naissance" onclick="setTimelineFilter('naissance', this)">
+            <i class="fa-solid fa-baby"></i> Naissances
+        </button>
+        <button class="filter-btn" data-filter="mariage" onclick="setTimelineFilter('mariage', this)">
+            <i class="fa-solid fa-rings-wedding"></i> Mariages
+        </button>
+        <button class="filter-btn" data-filter="diplome" onclick="setTimelineFilter('diplome', this)">
+            <i class="fa-solid fa-graduation-cap"></i> Diplômes
+        </button>
+        <button class="filter-btn" data-filter="demenagement" onclick="setTimelineFilter('demenagement', this)">
+            <i class="fa-solid fa-truck-moving"></i> Déménagements
+        </button>
+        <button class="filter-btn" data-filter="autre" onclick="setTimelineFilter('autre', this)">
+            <i class="fa-solid fa-star"></i> Autres
+        </button>
+    </div>
+
+    {% if timeline_groups %}
+    <!-- TIMELINE -->
+    <div class="timeline-wrapper">
+        <div class="timeline-line"></div>
+
+        {% for group in timeline_groups %}
+        <div class="timeline-year-group">
+            <div class="timeline-year-marker">
+                <span>{{ group.year }}</span>
+            </div>
+
+            {% for event in group.events %}
+            <div class="timeline-entry timeline-entry-{{ event.side }}" data-type="{{ event.event_type }}">
+                <div class="timeline-dot timeline-dot-{{ event.event_type }}">
+                    <i class="fa-solid {{ event.icon }}"></i>
+                </div>
+                <div class="timeline-card">
+                    <div class="timeline-card-header">
+                        {% if event.member.photo %}
+                        <img src="{{ event.member.photo.url }}" alt="" class="timeline-avatar">
+                        {% else %}
+                        <div class="timeline-avatar-placeholder">
+                            {{ event.member.first_name|first|upper }}{{ event.member.last_name|first|upper }}
+                        </div>
+                        {% endif %}
+                        <div>
+                            <h4>{{ event.title }}</h4>
+                            <span class="timeline-date">{{ event.date|date:"d F Y" }}</span>
+                        </div>
+                        {% if event.can_delete %}
+                        <form method="POST" action="{% url 'delete_timeline_event' event.id %}"
+                              onsubmit="return confirm('Supprimer cet événement ?');" class="timeline-delete-form">
+                            {% csrf_token %}
+                            <button type="submit"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    {% if event.description %}
+                    <p class="timeline-description">{{ event.description }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fa-solid fa-timeline"></i>
+        <p>Aucun événement dans la chronologie pour le moment.</p>
+        <button class="btn-submit" style="width:auto; display:inline-flex; margin-top:14px;"
+                onclick="openModal('timelineModal')">
+            <i class="fa-solid fa-plus"></i> Ajouter le premier événement
+        </button>
+    </div>
+    {% endif %}
+
+</main>
+
+<!-- ─── MODAL NOUVEL ÉVÉNEMENT ─── -->
+<div class="modal-overlay" id="timelineModal" onclick="closeModal('timelineModal')">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Ajouter à la chronologie</h3>
+            <button onclick="closeModal('timelineModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form method="POST" action="{% url 'create_timeline_event' %}" class="modal-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Concerne quel membre ? <span class="required">*</span></label>
+                <select name="member_id" required>
+                    <option value="">-- Choisissez --</option>
+                    {% for member in family_members %}
+                    <option value="{{ member.id }}">{{ member.first_name }} {{ member.last_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Titre de l'événement <span class="required">*</span></label>
+                <input type="text" name="title" placeholder="Ex: Naissance de Léo" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Date <span class="required">*</span></label>
+                    <input type="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label>Type <span class="required">*</span></label>
+                    <select name="event_type" required>
+                        <option value="naissance">Naissance</option>
+                        <option value="mariage">Mariage</option>
+                        <option value="diplome">Diplôme</option>
+                        <option value="demenagement">Déménagement</option>
+                        <option value="deces">Décès</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="3" placeholder="Détails sur cet événement..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal('timelineModal')">Annuler</button>
+                <button type="submit" class="btn-save">
+                    <i class="fa-solid fa-check"></i> Ajouter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        document.querySelector('.main-content').classList.toggle('expanded');
+    }
+    function openModal(id) {
+        document.getElementById(id).classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function setTimelineFilter(filter, btn) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        document.querySelectorAll('.timeline-entry').forEach(entry => {
+            entry.style.display = (filter === 'all' || entry.dataset.type === filter) ? 'flex' : 'none';
+        });
+
+        document.querySelectorAll('.timeline-year-group').forEach(group => {
+            const visibleEntries = group.querySelectorAll('.timeline-entry[style="display: flex;"], .timeline-entry:not([style])');
+            const anyVisible = Array.from(group.querySelectorAll('.timeline-entry')).some(e => e.style.display !== 'none');
+            group.style.display = anyVisible ? 'block' : 'none';
+        });
+    }
+</script>
 
 </body>
 

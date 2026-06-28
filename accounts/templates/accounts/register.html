@@ -8,200 +8,206 @@
     <title>MIFFA — Créer un compte</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'global.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/css/register.css' %}">
 </head>
 
 <body>
-    <!-- NAVBAR -->
-    <header class="navbar">
-        <a href="{% url 'indexOfAccounts' %}" class="logo">
-            <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
-            MIFFA
-        </a>
-        <nav class="nav-links">
-            <a href="{% url 'indexOfAccounts' %}">Accueil</a>
-            <a href="{% url 'login' %}">Connexion</a>
-        </nav>
-    </header>
+<!-- NAVBAR -->
+<header class="navbar">
+    <a href="{% url 'indexOfAccounts' %}" class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+        MIFFA
+    </a>
+    <nav class="nav-links">
+        <a href="{% url 'indexOfAccounts' %}">Accueil</a>
+        <a href="{% url 'login' %}">Connexion</a>
+    </nav>
+</header>
 
-    <!-- PAGE -->
-    <main class="register-page">
+<!-- PAGE -->
+<main class="register-page">
 
-        <!-- SIDE DÉCORATIF -->
-        <div class="register-side">
-            <div class="side-bg"></div>
-            <div class="side-content">
-                <h2>Rejoignez<br><em>votre famille</em></h2>
-                <p>Créez votre compte et demandez à rejoindre l'espace familial qui vous correspond.</p>
-                <ul class="side-features">
-                    <li><i class="fa-solid fa-check"></i> Espace familial privé et sécurisé</li>
-                    <li><i class="fa-solid fa-check"></i> Arbre généalogique interactif</li>
-                    <li><i class="fa-solid fa-check"></i> Messagerie en temps réel</li>
-                    <li><i class="fa-solid fa-check"></i> Médiathèque familiale</li>
-                </ul>
-            </div>
+    <!-- SIDE DÉCORATIF -->
+    <div class="register-side">
+        <div class="side-bg"></div>
+        <div class="side-content">
+            <h2>Rejoignez<br><em>votre famille</em></h2>
+            <p>Créez votre compte et demandez à rejoindre l'espace familial qui vous correspond.</p>
+            <ul class="side-features">
+                <li><i class="fa-solid fa-check"></i> Espace familial privé et sécurisé</li>
+                <li><i class="fa-solid fa-check"></i> Arbre généalogique interactif</li>
+                <li><i class="fa-solid fa-check"></i> Messagerie en temps réel</li>
+                <li><i class="fa-solid fa-check"></i> Médiathèque familiale</li>
+            </ul>
         </div>
+    </div>
 
-        <!-- FORMULAIRE -->
-        <div class="register-form-wrapper">
-            <div class="form-card">
-                <div class="form-header">
-                    <div class="form-icon"><i class="fa-solid fa-user-plus"></i></div>
-                    <h3>Créer un compte</h3>
-                    <p>Remplissez les informations ci-dessous</p>
+    <!-- FORMULAIRE -->
+    <div class="register-form-wrapper">
+        <div class="form-card">
+            <div class="form-header">
+                <div class="form-icon"><i class="fa-solid fa-user-plus"></i></div>
+                <h3>Créer un compte</h3>
+                <p>Remplissez les informations ci-dessous</p>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Erreurs globales du formulaire -->
+                {% for error in form.non_field_errors %}
+                <div class="error" style="margin-bottom: 12px;">
+                    <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+                </div>
+                {% endfor %}
+
+                <!-- reste du formulaire... -->
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Prénom <span class="required">*</span></label>
+                        {{ form.first_name }}
+                    </div>
+                    <div class="form-group">
+                        <label>Nom <span class="required">*</span></label>
+                        {{ form.last_name }}
+                    </div>
                 </div>
 
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-
-                    <!-- Erreurs globales du formulaire -->
-                    {% for error in form.non_field_errors %}
-                    <div class="error" style="margin-bottom: 12px;">
-                        <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
-                    </div>
+                <div class="form-group">
+                    <label>Nom d'utilisateur <span class="required">*</span></label>
+                    {{ form.username }}
+                    {% for error in form.username.errors %}
+                    <div class="error"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</div>
                     {% endfor %}
-
-                    <!-- reste du formulaire... -->
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Prénom <span class="required">*</span></label>
-                            {{ form.first_name }}
-                        </div>
-                        <div class="form-group">
-                            <label>Nom <span class="required">*</span></label>
-                            {{ form.last_name }}
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nom d'utilisateur <span class="required">*</span></label>
-                        {{ form.username }}
-                        {% for error in form.username.errors %}
-                        <div class="error"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</div>
-                        {% endfor %}
-                    </div>
-
-                    <div class="form-group">
-                        <label>Mot de passe <span class="required">*</span></label>
-                        <div class="password-container">
-                            {{ form.password1 }}
-                            <span class="toggle-eye" onclick="togglePassword('id_password1', this)">
+                </div>
+                <div class="form-group">
+                    <label>Email <span class="required">*</span></label>
+                    {{ form.email }}
+                    {% for error in form.email.errors %}
+                    <div class="error"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe <span class="required">*</span></label>
+                    <div class="password-container">
+                        {{ form.password1 }}
+                        <span class="toggle-eye" onclick="togglePassword('id_password1', this)">
                                 <i class="fa-solid fa-eye"></i>
                             </span>
-                        </div>
-                        {% for error in form.password1.errors %}
-                        <div class="error"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</div>
-                        {% endfor %}
                     </div>
+                    {% for error in form.password1.errors %}
+                    <div class="error"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</div>
+                    {% endfor %}
+                </div>
 
-                    <div class="form-group">
-                        <label>Confirmation du mot de passe <span class="required">*</span></label>
-                        <div class="password-container">
-                            {{ form.password2 }}
-                            <span class="toggle-eye" onclick="togglePassword('id_password2', this)">
+                <div class="form-group">
+                    <label>Confirmation du mot de passe <span class="required">*</span></label>
+                    <div class="password-container">
+                        {{ form.password2 }}
+                        <span class="toggle-eye" onclick="togglePassword('id_password2', this)">
                                 <i class="fa-solid fa-eye"></i>
                             </span>
-                        </div>
-                        {% for error in form.password2.errors %}
-                        <div class="error"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</div>
-                        {% endfor %}
                     </div>
+                    {% for error in form.password2.errors %}
+                    <div class="error"><i class="fa-solid fa-circle-exclamation"></i> {{ error }}</div>
+                    {% endfor %}
+                </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Rôle <span class="required">*</span></label>
-                            {{ form.role }}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Rôle <span class="required">*</span></label>
+                        {{ form.role }}
 
-                            <!-- SI ADMIN -->
-                            <div id="adminFamilyBlock" style="display:none">
-                                <div class="form-group" style="margin-top:12px">
-                                    <label>Nom de votre famille <span class="required">*</span></label>
-                                    <input type="text" name="family_name" id="familyName"
-                                        placeholder="Ex: Famille Dupont">
-                                </div>
-                                <div class="form-group" style="margin-top:8px">
-                                    <label>Identifiant unique <span class="required">*</span></label>
-                                    <input type="text" name="family_code" id="familyCode" placeholder="Ex: DUPONT2024"
-                                        maxlength="10" oninput="this.value = this.value.toUpperCase()">
-                                    <small style="color:var(--text-light); font-size:12px;">
-                                        Cet identifiant permettra aux membres de retrouver votre famille. Max 10
-                                        caractères.
-                                    </small>
-                                </div>
+                        <!-- SI ADMIN -->
+                        <div id="adminFamilyBlock" style="display:none">
+                            <div class="form-group" style="margin-top:12px">
+                                <label>Nom de votre famille <span class="required">*</span></label>
+                                <input type="text" name="family_name" id="familyName"
+                                       placeholder="Ex: Famille Dupont">
                             </div>
-
-                            <!-- SI MEMBRE -->
-                            <div id="familyModal" class="family-modal">
-                                <div class="family-modal-box">
-                                    <h4><i class="fa-solid fa-magnifying-glass"></i> Trouver votre famille</h4>
-                                    <p>Entrez le code unique de votre famille.</p>
-
-                                    <input type="text" id="familySearch" placeholder="Ex: DUPONT2024"
-                                        oninput="searchFamily(this.value)" autocomplete="off"
-                                        style="text-transform:uppercase">
-
-                                    <div id="familyResults" class="family-results"></div>
-
-                                    <div id="familySelected" class="family-selected" style="display:none">
-                                        <i class="fa-solid fa-circle-check"></i>
-                                        <span id="familySelectedName"></span>
-                                        <button type="button" onclick="clearFamily()">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </button>
-                                    </div>
-
-                                    <input type="hidden" name="family_id" id="familyId">
-
-                                    <p class="family-modal-note">
-                                        <i class="fa-solid fa-circle-info"></i>
-                                        Demandez le code à l'administrateur de votre famille.
-                                    </p>
-                                </div>
+                            <div class="form-group" style="margin-top:8px">
+                                <label>Identifiant unique <span class="required">*</span></label>
+                                <input type="text" name="family_code" id="familyCode" placeholder="Ex: DUPONT2024"
+                                       maxlength="10" oninput="this.value = this.value.toUpperCase()">
+                                <small style="color:var(--text-light); font-size:12px;">
+                                    Cet identifiant permettra aux membres de retrouver votre famille. Max 10
+                                    caractères.
+                                </small>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Date de naissance <span class="required">*</span></label>
-                            {{ form.birth_date }}
+                        <!-- SI MEMBRE -->
+                        <div id="familyModal" class="family-modal">
+                            <div class="family-modal-box">
+                                <h4><i class="fa-solid fa-magnifying-glass"></i> Trouver votre famille</h4>
+                                <p>Entrez le code unique de votre famille.</p>
+
+                                <input type="text" id="familySearch" placeholder="Ex: DUPONT2024"
+                                       oninput="searchFamily(this.value)" autocomplete="off"
+                                       style="text-transform:uppercase">
+
+                                <div id="familyResults" class="family-results"></div>
+
+                                <div id="familySelected" class="family-selected" style="display:none">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span id="familySelectedName"></span>
+                                    <button type="button" onclick="clearFamily()">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+
+                                <input type="hidden" name="family_id" id="familyId">
+
+                                <p class="family-modal-note">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    Demandez le code à l'administrateur de votre famille.
+                                </p>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Bio <span class="optional">(optionnel)</span></label>
-                        {{ form.bio }}
+                        <label>Date de naissance <span class="required">*</span></label>
+                        {{ form.birth_date }}
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label>Photo de profil <span class="optional">(optionnel)</span></label>
-                        <div class="file-upload">
-                            {{ form.photo }}
-                            <div class="file-upload-label">
-                                <i class="fa-solid fa-cloud-arrow-up"></i>
-                                <span>Cliquez pour choisir une photo</span>
-                            </div>
+                <div class="form-group">
+                    <label>Bio <span class="optional">(optionnel)</span></label>
+                    {{ form.bio }}
+                </div>
+
+                <div class="form-group">
+                    <label>Photo de profil <span class="optional">(optionnel)</span></label>
+                    <div class="file-upload">
+                        {{ form.photo }}
+                        <div class="file-upload-label">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>Cliquez pour choisir une photo</span>
                         </div>
                     </div>
+                </div>
 
-                    <button type="submit" class="btn-submit">
-                        <i class="fa-solid fa-user-plus"></i>
-                        Créer mon compte
-                    </button>
+                <button type="submit" class="btn-submit">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Créer mon compte
+                </button>
 
-                    <p class="login-link">
-                        Déjà un compte ? <a href="{% url 'login' %}">Se connecter</a>
-                    </p>
+                <p class="login-link">
+                    Déjà un compte ? <a href="{% url 'login' %}">Se connecter</a>
+                </p>
 
-                </form>
-            </div>
+            </form>
         </div>
+    </div>
 
-    </main>
-    <script src="{% static 'accounts/js/register.js' %}"></script>
+</main>
+<script src="{% static 'accounts/js/register.js' %}"></script>
 
 </body>
 

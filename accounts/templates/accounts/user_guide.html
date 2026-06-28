@@ -1,0 +1,300 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIFFA — Guide d'utilisation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'global.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/guide.css' %}">
+</head>
+
+<body>
+
+    <!-- ─── SIDEBAR ─── -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{% url 'indexOfAccounts' %}" class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+                <span>MIFFA</span>
+            </a>
+            <button class="sidebar-toggle" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                {% if user.photo %}
+                <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+                {% else %}
+                <div class="avatar-placeholder">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</div>
+                {% endif %}
+            </div>
+            <div class="user-info">
+                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+                <span class="user-role">{{ user.get_role_display }}</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Menu principal</div>
+            <a href="{% url 'dashboard' %}" class="nav-item">
+                <i class="fa-solid fa-house"></i><span>Mon espace</span>
+            </a>
+            <a href="{% url 'members_list' %}" class="nav-item">
+                <i class="fa-solid fa-users"></i><span>Membres</span>
+            </a>
+            <a href="{% url 'add_relation' %}" class="nav-item">
+                <i class="fa-solid fa-link"></i><span>Mes relations</span>
+            </a>
+            <a href="{% url 'family_tree' %}" class="nav-item">
+                <i class="fa-solid fa-tree"></i><span>Arbre généalogique</span>
+            </a>
+            <a href="{% url 'timeline_view' %}" class="nav-item">
+                <i class="fa-solid fa-timeline"></i><span>Chronologie</span>
+            </a>
+
+            <div class="nav-section-label">Communication</div>
+            <a href="{% url 'news_feed' %}" class="nav-item">
+                <i class="fa-solid fa-newspaper"></i><span>Fil d'actualité</span>
+            </a>
+
+            <div class="nav-section-label">Contenu</div>
+            <a href="{% url 'media_library' %}" class="nav-item">
+                <i class="fa-solid fa-images"></i><span>Médiathèque</span>
+            </a>
+            <a href="{% url 'calendar_view' %}" class="nav-item">
+                <i class="fa-solid fa-calendar-days"></i><span>Calendrier</span>
+            </a>
+            <a href="{% url 'notifications' %}" class="nav-item">
+                <i class="fa-solid fa-bell"></i><span>Notifications</span>
+            </a>
+
+            <div class="nav-section-label">Aide</div>
+            <a href="{% url 'user_guide' %}" class="nav-item active">
+                <i class="fa-solid fa-circle-question"></i><span>Guide d'utilisation</span>
+            </a>
+
+            {% if user.role == 'admin' %}
+            <div class="nav-section-label">Administration</div>
+            <a href="{% url 'admin_panel' %}" class="nav-item">
+                <i class="fa-solid fa-shield-halved"></i><span>Administration</span>
+            </a>
+            {% endif %}
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'deconnexion' %}" class="nav-item logout">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Déconnexion</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ─── CONTENU PRINCIPAL ─── -->
+    <main class="main-content">
+
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>Guide d'utilisation</h1>
+                <p>Tout ce qu'il faut savoir pour bien utiliser MIFFA</p>
+            </div>
+        </div>
+
+        <!-- SOMMAIRE -->
+        <div class="guide-toc">
+            <a href="#demarrage"><i class="fa-solid fa-rocket"></i> Démarrage</a>
+            <a href="#famille"><i class="fa-solid fa-house"></i> Ma famille</a>
+            <a href="#relations"><i class="fa-solid fa-link"></i> Relations</a>
+            <a href="#modules"><i class="fa-solid fa-grid-2"></i> Modules</a>
+            <a href="#invites"><i class="fa-solid fa-user-clock"></i> Invités</a>
+            <a href="#confidentialite"><i class="fa-solid fa-lock"></i> Confidentialité</a>
+            <a href="#faq"><i class="fa-solid fa-circle-question"></i> FAQ</a>
+        </div>
+
+        <!-- ─── DÉMARRAGE ─── -->
+        <section class="guide-section" id="demarrage">
+            <h2><i class="fa-solid fa-rocket"></i> Démarrage</h2>
+
+            <div class="guide-card">
+                <div class="guide-step">
+                    <div class="step-num">1</div>
+                    <div>
+                        <h4>Créez votre compte</h4>
+                        <p>Choisissez si vous voulez créer une nouvelle famille (en tant qu'<strong>Administrateur</strong>) ou rejoindre une famille existante (en tant que <strong>Membre</strong>).</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-num">2</div>
+                    <div>
+                        <h4>Administrateur : créez votre famille</h4>
+                        <p>Donnez un nom à votre famille. Un <strong>code unique</strong> est généré automatiquement — partagez-le avec vos proches pour qu'ils puissent vous rejoindre.</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-num">3</div>
+                    <div>
+                        <h4>Membre : rejoignez une famille</h4>
+                        <p>Entrez le code fourni par votre administrateur. Votre demande sera envoyée et devra être <strong>approuvée</strong> avant que vous n'accédiez aux fonctionnalités.</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-num">4</div>
+                    <div>
+                        <h4>En attendant l'approbation</h4>
+                        <p>Vous pouvez modifier votre profil et vous déconnecter. Vous pouvez aussi envoyer un <strong>rappel</strong> à l'administrateur si la demande prend du temps.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── MA FAMILLE ─── -->
+        <section class="guide-section" id="famille">
+            <h2><i class="fa-solid fa-house"></i> Ma famille</h2>
+            <div class="guide-grid">
+                <div class="guide-tile">
+                    <i class="fa-solid fa-copy"></i>
+                    <h4>Code de la famille</h4>
+                    <p>Visible dans le panneau d'administration. Cliquez sur le code pour le copier et le partager facilement.</p>
+                </div>
+                <div class="guide-tile">
+                    <i class="fa-solid fa-image"></i>
+                    <h4>Bannière</h4>
+                    <p>L'administrateur peut personnaliser la bannière affichée en haut du tableau de bord de tous les membres.</p>
+                </div>
+                <div class="guide-tile">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <h4>Ajouter un membre</h4>
+                    <p>L'admin peut envoyer une invitation directe par nom d'utilisateur — la personne doit l'accepter pour rejoindre.</p>
+                </div>
+                <div class="guide-tile">
+                    <i class="fa-solid fa-vote-yea"></i>
+                    <h4>Retirer un membre</h4>
+                    <p>Le retrait d'un membre passe par un <strong>vote</strong> de tous les membres de la famille, pas une décision unilatérale.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── RELATIONS ─── -->
+        <section class="guide-section" id="relations">
+            <h2><i class="fa-solid fa-link"></i> Définir vos relations</h2>
+            <div class="guide-card">
+                <p class="guide-text">
+                    Une fois approuvé(e), rendez-vous sur <strong>« Mes relations »</strong> pour indiquer votre lien
+                    avec les membres de votre famille (parent, enfant, conjoint, frère/sœur...).
+                </p>
+                <ul class="guide-list">
+                    <li><i class="fa-solid fa-check"></i> La personne concernée reçoit une notification et un email pour confirmer la relation.</li>
+                    <li><i class="fa-solid fa-check"></i> Une relation ne peut pas être définie deux fois avec la même personne.</li>
+                    <li><i class="fa-solid fa-check"></i> Pour modifier ou supprimer une relation existante, l'accord des deux personnes est nécessaire.</li>
+                    <li><i class="fa-solid fa-check"></i> Vos relations alimentent automatiquement l'<strong>arbre généalogique</strong>.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ─── MODULES ─── -->
+        <section class="guide-section" id="modules">
+            <h2><i class="fa-solid fa-grid-2"></i> Les modules</h2>
+            <div class="guide-grid">
+                <div class="guide-tile">
+                    <i class="fa-solid fa-users" style="color:#2e7d32"></i>
+                    <h4>Membres</h4>
+                    <p>Consultez les profils de tous les membres de votre famille.</p>
+                </div>
+                <div class="guide-tile">
+                    <i class="fa-solid fa-tree" style="color:#00796b"></i>
+                    <h4>Arbre généalogique</h4>
+                    <p>Visualisez les liens familiaux générés à partir des relations définies.</p>
+                </div>
+                <div class="guide-tile">
+                    <i class="fa-solid fa-timeline" style="color:#6d4c41"></i>
+                    <h4>Chronologie</h4>
+                    <p>Naissances, mariages, diplômes... les grands événements de la famille classés par date.</p>
+                </div>
+                <div class="guide-tile">
+                    <i class="fa-solid fa-newspaper" style="color:#1565c0"></i>
+                    <h4>Fil d'actualité</h4>
+                    <p>Partagez des nouvelles, photos et commentaires avec toute la famille.</p>
+                </div>
+                <div class="guide-tile">
+                    <i class="fa-solid fa-images" style="color:#7b1fa2"></i>
+                    <h4>Médiathèque</h4>
+                    <p>Créez des albums et stockez photos, vidéos et documents familiaux.</p>
+                </div>
+                <div class="guide-tile">
+                    <i class="fa-solid fa-calendar-days" style="color:#e65100"></i>
+                    <h4>Calendrier</h4>
+                    <p>Organisez des événements et suivez les réponses (RSVP) des membres.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─── INVITÉS ─── -->
+        <section class="guide-section" id="invites">
+            <h2><i class="fa-solid fa-user-clock"></i> Statut Invité</h2>
+            <div class="guide-card">
+                <p class="guide-text">
+                    Un invité a un accès <strong>temporaire et limité</strong> à une famille, défini par l'administrateur :
+                </p>
+                <ul class="guide-list">
+                    <li><i class="fa-solid fa-clock"></i> Une durée précise (ex : 7 jours)</li>
+                    <li><i class="fa-solid fa-list-check"></i> Des modules spécifiques autorisés (membres, arbre, médiathèque...)</li>
+                    <li><i class="fa-solid fa-hourglass-end"></i> À l'expiration, l'accès est révoqué mais le compte reste actif</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ─── CONFIDENTIALITÉ ─── -->
+        <section class="guide-section" id="confidentialite">
+            <h2><i class="fa-solid fa-lock"></i> Confidentialité de votre profil</h2>
+            <div class="guide-card">
+                <p class="guide-text">
+                    Dans <strong>« Modifier le profil »</strong>, vous pouvez choisir de masquer certaines informations
+                    (profession, téléphone, ville, email...) aux autres membres de la famille grâce aux options
+                    <strong>« Rendre privé »</strong>.
+                </p>
+            </div>
+        </section>
+
+        <!-- ─── FAQ ─── -->
+        <section class="guide-section" id="faq">
+            <h2><i class="fa-solid fa-circle-question"></i> Questions fréquentes</h2>
+            <div class="guide-faq">
+                <details class="faq-item">
+                    <summary>Ma demande d'adhésion n'est pas approuvée, que faire ?</summary>
+                    <p>Vous pouvez envoyer un rappel à l'administrateur depuis votre tableau de bord. Si la demande n'est toujours pas traitée après 24h, vous pouvez en renvoyer une nouvelle (jusqu'à 3 tentatives).</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Puis-je appartenir à plusieurs familles ?</summary>
+                    <p>Vous avez une famille principale (en tant que membre ou admin), mais vous pouvez aussi être invité temporairement dans d'autres familles.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Comment supprimer mon compte ?</summary>
+                    <p>Depuis « Modifier le profil », cliquez sur « Supprimer mon compte ». Si vous êtes l'unique administrateur d'une famille avec d'autres membres, vous devez d'abord désigner un autre administrateur.</p>
+                </details>
+                <details class="faq-item">
+                    <summary>Comment fonctionne le vote de retrait d'un membre ?</summary>
+                    <p>Un administrateur initie le vote. Tous les autres membres (sauf la personne concernée) votent Oui ou Non. Si la majorité vote Oui, le membre est retiré de la famille — il garde son compte mais peut rejoindre une autre famille avec un code.</p>
+                </details>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.querySelector('.main-content').classList.toggle('expanded');
+        }
+    </script>
+
+</body>
+
+</html>

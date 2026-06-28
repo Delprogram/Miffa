@@ -8,8 +8,8 @@
     <title>MIFFA — Arbre généalogique</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'global.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
@@ -18,236 +18,236 @@
 
 <body>
 
-    <!-- ─── SIDEBAR ─── -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <a href="{% url 'indexOfAccounts' %}" class="logo">
-                <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
-                <span>MIFFA</span>
-            </a>
-            <button class="sidebar-toggle" onclick="toggleSidebar()">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </div>
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="{% url 'indexOfAccounts' %}" class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+            <span>MIFFA</span>
+        </a>
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
 
-        <div class="sidebar-user">
-            <div class="user-avatar">
-                {% if user.photo %}
-                <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
-                {% else %}
-                <div class="avatar-placeholder">
-                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
-                </div>
-                {% endif %}
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            {% if user.photo %}
+            <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+            {% else %}
+            <div class="avatar-placeholder">
+                {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
             </div>
-            <div class="user-info">
-                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
-                <span class="user-role">{{ user.get_role_display }}</span>
-            </div>
+            {% endif %}
         </div>
+        <div class="user-info">
+            <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+            <span class="user-role">{{ user.get_role_display }}</span>
+        </div>
+    </div>
 
-        <nav class="sidebar-nav">
-            <div class="nav-section-label">Menu principal</div>
-            <a href="{% url 'dashboard' %}" class="nav-item">
-                <i class="fa-solid fa-house"></i>
-                <span>Mon espace</span>
-            </a>
-            <a href="{% url 'members_list' %}" class="nav-item">
-                <i class="fa-solid fa-users"></i>
-                <span>Membres</span>
-            </a>
-            <a href="{% url 'add_relation' %}" class="nav-item">
-        <i class="fa-solid fa-link"></i>
-        <span>Mes relations</span>
-        {% if pending_relation_count %}
-        <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Menu principal</div>
+        <a href="{% url 'dashboard' %}" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Mon espace</span>
+        </a>
+        <a href="{% url 'members_list' %}" class="nav-item">
+            <i class="fa-solid fa-users"></i>
+            <span>Membres</span>
+        </a>
+        <a href="{% url 'add_relation' %}" class="nav-item">
+            <i class="fa-solid fa-link"></i>
+            <span>Mes relations</span>
+            {% if pending_relation_count %}
+            <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
             {{ pending_relation_count }}
         </span>
-        {% endif %}
-    </a>
-            <a href="{% url 'family_tree' %}" class="nav-item active">
-                <i class="fa-solid fa-tree"></i>
-                <span>Arbre généalogique</span>
-            </a>
-            <a href="{% url 'timeline_view' %}" class="nav-item">
-                <i class="fa-solid fa-timeline"></i>
-                <span>Chronologie</span>
-            </a>
+            {% endif %}
+        </a>
+        <a href="{% url 'family_tree' %}" class="nav-item active">
+            <i class="fa-solid fa-tree"></i>
+            <span>Arbre généalogique</span>
+        </a>
+        <a href="{% url 'timeline_view' %}" class="nav-item">
+            <i class="fa-solid fa-timeline"></i>
+            <span>Chronologie</span>
+        </a>
 
-            <div class="nav-section-label">Communication</div>
-            <a href="{% url 'news_feed' %}" class="nav-item">
-                <i class="fa-solid fa-newspaper"></i>
-                <span>Fil d'actualité</span>
-            </a>
+        <div class="nav-section-label">Communication</div>
+        <a href="{% url 'news_feed' %}" class="nav-item">
+            <i class="fa-solid fa-newspaper"></i>
+            <span>Fil d'actualité</span>
+        </a>
 
-            <div class="nav-section-label">Contenu</div>
-            <a href="{% url 'media_library' %}" class="nav-item">
-                <i class="fa-solid fa-images"></i>
-                <span>Médiathèque</span>
-            </a>
-            <a href="{% url 'calendar_view' %}" class="nav-item">
-                <i class="fa-solid fa-calendar-days"></i>
-                <span>Calendrier</span>
-            </a>
-            <a href="{% url 'notifications' %}" class="nav-item">
-                <i class="fa-solid fa-bell"></i>
-                <span>Notifications</span>
-                {% if unread_notif_count %}
-                <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+        <div class="nav-section-label">Contenu</div>
+        <a href="{% url 'media_library' %}" class="nav-item">
+            <i class="fa-solid fa-images"></i>
+            <span>Médiathèque</span>
+        </a>
+        <a href="{% url 'calendar_view' %}" class="nav-item">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Calendrier</span>
+        </a>
+        <a href="{% url 'notifications' %}" class="nav-item">
+            <i class="fa-solid fa-bell"></i>
+            <span>Notifications</span>
+            {% if unread_notif_count %}
+            <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
                     {{ unread_notif_count }}
                 </span>
-                {% endif %}
-            </a>
-
-            {% if user.role == 'admin' %}
-            <div class="nav-section-label">Administration</div>
-            <a href="{% url 'admin_panel' %}" class="nav-item">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span>Administration</span>
-            </a>
             {% endif %}
-        </nav>
+        </a>
 
-        <div class="sidebar-footer">
-            <a href="{% url 'deconnexion' %}" class="nav-item logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Déconnexion</span>
+        {% if user.role == 'admin' %}
+        <div class="nav-section-label">Administration</div>
+        <a href="{% url 'admin_panel' %}" class="nav-item">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Administration</span>
+        </a>
+        {% endif %}
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="{% url 'deconnexion' %}" class="nav-item logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Déconnexion</span>
+        </a>
+    </div>
+</aside>
+
+<!-- ─── CONTENU PRINCIPAL ─── -->
+<main class="main-content tree-main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <h1>Arbre généalogique</h1>
+            <p>L'histoire de <strong>{{ user.family.name }}</strong>, génération par génération</p>
+        </div>
+        <div class="tree-controls">
+            <button class="tree-btn" onclick="zoomTree(1.2)"><i class="fa-solid fa-plus"></i></button>
+            <button class="tree-btn" onclick="zoomTree(0.8)"><i class="fa-solid fa-minus"></i></button>
+            <button class="tree-btn" onclick="resetTreeView()"><i class="fa-solid fa-compress"></i></button>
+        </div>
+    </div>
+
+    {% if nodes %}
+    <!-- LÉGENDE -->
+    <div class="tree-legend">
+        <span><i class="fa-solid fa-circle" style="color:#2e7d32"></i> Génération actuelle</span>
+        <span><i class="fa-solid fa-circle" style="color:#8d6748"></i> Ascendants</span>
+        <span><i class="fa-solid fa-circle" style="color:#4caf50"></i> Descendants</span>
+    </div>
+
+    <!-- INDICATEURS DE GÉNÉRATION -->
+    <div class="generation-bar">
+        {% for gen in generation_summary %}
+        <div class="generation-chip generation-chip-{{ gen.category }}">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>{{ gen.label }}</span>
+            <span class="generation-count">{{ gen.count }}</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- ARBRE -->
+    <div class="tree-viewport" id="treeViewport">
+        <div class="tree-canvas" id="treeCanvas">
+            <svg id="treeSvg" width="{{ svg_width }}" height="{{ svg_height }}">
+                <!-- LIENS -->
+                {% for link in links %}
+                <line x1="{{ link.x1 }}" y1="{{ link.y1 }}" x2="{{ link.x2 }}" y2="{{ link.y2 }}"
+                      class="tree-link tree-link-{{ link.type }}"/>
+                {% endfor %}
+            </svg>
+
+            <!-- NŒUDS (en HTML par-dessus le SVG pour les photos rondes) -->
+            {% for node in nodes %}
+            <a href="{% url 'member_profile' node.member.id %}"
+               class="tree-node tree-node-{{ node.category }}"
+               style="left:{{ node.x }}px; top:{{ node.y }}px;"
+               title="{{ node.member.first_name }} {{ node.member.last_name }}">
+                <div class="tree-node-avatar">
+                    {% if node.member.photo %}
+                    <img src="{{ node.member.photo.url }}" alt="">
+                    {% else %}
+                    <div class="tree-avatar-placeholder">
+                        {{ node.member.first_name|first|upper }}{{ node.member.last_name|first|upper }}
+                    </div>
+                    {% endif %}
+                </div>
+                <span class="tree-node-name">{{ node.member.first_name }}</span>
+                <span class="tree-node-relation">{{ node.relation_label }}</span>
             </a>
-        </div>
-    </aside>
-
-    <!-- ─── CONTENU PRINCIPAL ─── -->
-    <main class="main-content tree-main">
-
-        <!-- TOPBAR -->
-        <div class="topbar">
-            <div class="topbar-left">
-                <h1>Arbre généalogique</h1>
-                <p>L'histoire de <strong>{{ user.family.name }}</strong>, génération par génération</p>
-            </div>
-            <div class="tree-controls">
-                <button class="tree-btn" onclick="zoomTree(1.2)"><i class="fa-solid fa-plus"></i></button>
-                <button class="tree-btn" onclick="zoomTree(0.8)"><i class="fa-solid fa-minus"></i></button>
-                <button class="tree-btn" onclick="resetTreeView()"><i class="fa-solid fa-compress"></i></button>
-            </div>
-        </div>
-
-        {% if nodes %}
-        <!-- LÉGENDE -->
-        <div class="tree-legend">
-            <span><i class="fa-solid fa-circle" style="color:#2e7d32"></i> Génération actuelle</span>
-            <span><i class="fa-solid fa-circle" style="color:#8d6748"></i> Ascendants</span>
-            <span><i class="fa-solid fa-circle" style="color:#4caf50"></i> Descendants</span>
-        </div>
-
-        <!-- INDICATEURS DE GÉNÉRATION -->
-        <div class="generation-bar">
-            {% for gen in generation_summary %}
-            <div class="generation-chip generation-chip-{{ gen.category }}">
-                <i class="fa-solid fa-layer-group"></i>
-                <span>{{ gen.label }}</span>
-                <span class="generation-count">{{ gen.count }}</span>
-            </div>
             {% endfor %}
         </div>
+    </div>
+    {% else %}
+    <div class="empty-state tree-empty">
+        <i class="fa-solid fa-tree"></i>
+        <p>Aucune relation familiale définie pour le moment.</p>
+        <a href="{% url 'add_relation' %}" class="btn-submit" style="width:auto; display:inline-flex; margin-top:14px;">
+            <i class="fa-solid fa-plus"></i> Définir une relation
+        </a>
+    </div>
+    {% endif %}
 
-        <!-- ARBRE -->
-        <div class="tree-viewport" id="treeViewport">
-            <div class="tree-canvas" id="treeCanvas">
-                <svg id="treeSvg" width="{{ svg_width }}" height="{{ svg_height }}">
-                    <!-- LIENS -->
-                    {% for link in links %}
-                    <line x1="{{ link.x1 }}" y1="{{ link.y1 }}" x2="{{ link.x2 }}" y2="{{ link.y2 }}"
-                        class="tree-link tree-link-{{ link.type }}" />
-                    {% endfor %}
-                </svg>
+</main>
 
-                <!-- NŒUDS (en HTML par-dessus le SVG pour les photos rondes) -->
-                {% for node in nodes %}
-                <a href="{% url 'member_profile' node.member.id %}"
-                    class="tree-node tree-node-{{ node.category }}"
-                    style="left:{{ node.x }}px; top:{{ node.y }}px;"
-                    title="{{ node.member.first_name }} {{ node.member.last_name }}">
-                    <div class="tree-node-avatar">
-                        {% if node.member.photo %}
-                            <img src="{{ node.member.photo.url }}" alt="">
-                        {% else %}
-                            <div class="tree-avatar-placeholder">
-                                {{ node.member.first_name|first|upper }}{{ node.member.last_name|first|upper }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <span class="tree-node-name">{{ node.member.first_name }}</span>
-                    <span class="tree-node-relation">{{ node.relation_label }}</span>
-                </a>
-                {% endfor %}
-            </div>
-        </div>
-        {% else %}
-        <div class="empty-state tree-empty">
-            <i class="fa-solid fa-tree"></i>
-            <p>Aucune relation familiale définie pour le moment.</p>
-            <a href="{% url 'add_relation' %}" class="btn-submit" style="width:auto; display:inline-flex; margin-top:14px;">
-                <i class="fa-solid fa-plus"></i> Définir une relation
-            </a>
-        </div>
-        {% endif %}
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        document.querySelector('.main-content').classList.toggle('expanded');
+    }
 
-    </main>
+    let scale = 1;
+    let panX = 0, panY = 0;
+    let isPanning = false;
+    let startX, startY;
 
-    <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-            document.querySelector('.main-content').classList.toggle('expanded');
+    const canvas = document.getElementById('treeCanvas');
+    const viewport = document.getElementById('treeViewport');
+
+    function applyTransform() {
+        if (canvas) {
+            canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
         }
+    }
 
-        let scale = 1;
-        let panX = 0, panY = 0;
-        let isPanning = false;
-        let startX, startY;
+    function zoomTree(factor) {
+        scale = Math.min(Math.max(scale * factor, 0.4), 2.5);
+        applyTransform();
+    }
 
-        const canvas = document.getElementById('treeCanvas');
-        const viewport = document.getElementById('treeViewport');
+    function resetTreeView() {
+        scale = 1; panX = 0; panY = 0;
+        applyTransform();
+    }
 
-        function applyTransform() {
-            if (canvas) {
-                canvas.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
-            }
-        }
-
-        function zoomTree(factor) {
-            scale = Math.min(Math.max(scale * factor, 0.4), 2.5);
+    if (viewport) {
+        viewport.addEventListener('mousedown', e => {
+            isPanning = true;
+            startX = e.clientX - panX;
+            startY = e.clientY - panY;
+            viewport.style.cursor = 'grabbing';
+        });
+        window.addEventListener('mousemove', e => {
+            if (!isPanning) return;
+            panX = e.clientX - startX;
+            panY = e.clientY - startY;
             applyTransform();
-        }
-
-        function resetTreeView() {
-            scale = 1; panX = 0; panY = 0;
-            applyTransform();
-        }
-
-        if (viewport) {
-            viewport.addEventListener('mousedown', e => {
-                isPanning = true;
-                startX = e.clientX - panX;
-                startY = e.clientY - panY;
-                viewport.style.cursor = 'grabbing';
-            });
-            window.addEventListener('mousemove', e => {
-                if (!isPanning) return;
-                panX = e.clientX - startX;
-                panY = e.clientY - startY;
-                applyTransform();
-            });
-            window.addEventListener('mouseup', () => {
-                isPanning = false;
-                viewport.style.cursor = 'grab';
-            });
-            viewport.addEventListener('wheel', e => {
-                e.preventDefault();
-                zoomTree(e.deltaY < 0 ? 1.08 : 0.93);
-            }, { passive: false });
-        }
-    </script>
+        });
+        window.addEventListener('mouseup', () => {
+            isPanning = false;
+            viewport.style.cursor = 'grab';
+        });
+        viewport.addEventListener('wheel', e => {
+            e.preventDefault();
+            zoomTree(e.deltaY < 0 ? 1.08 : 0.93);
+        }, { passive: false });
+    }
+</script>
 
 </body>
 

@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>MIFFA — Rejoindre une famille</title>
+    <link rel="stylesheet" href="{% static 'global.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
+</head>
+<body>
+<main class="main-content" style="margin-left:0;max-width:500px;margin:60px auto;">
+    <div class="profile-card" style="padding:32px;">
+        <h2 style="font-family:'Playfair Display',serif;color:var(--green-deep);margin-bottom:20px;">
+            Rejoindre une famille
+        </h2>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert-banner alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Code de la famille</label>
+                <input type="text" id="familySearch" placeholder="Ex: DUPONT2024" style="text-transform:uppercase"
+                       oninput="searchFamily(this.value)">
+                <div id="familyResults" style="margin-top:8px;"></div>
+                <input type="hidden" name="family_id" id="familyId" required>
+            </div>
+            <button type="submit" class="btn-save">Envoyer la demande</button>
+        </form>
+    </div>
+</main>
+
+<script>
+    let searchTimeout;
+    function searchFamily(query) {
+        clearTimeout(searchTimeout);
+        if (query.length < 3) { document.getElementById('familyResults').innerHTML = ''; return; }
+        searchTimeout = setTimeout(() => {
+            fetch(`/accounts/search-family/?q=${encodeURIComponent(query)}`)
+                .then(r => r.json())
+                .then(data => {
+                    const box = document.getElementById('familyResults');
+                    box.innerHTML = data.length === 0
+                        ? '<p style="color:var(--text-light);font-size:13px;">Aucune famille trouvée.</p>'
+                        : data.map(f => `<div onclick="selectFamily(${f.id}, '${f.name}')" style="padding:10px;cursor:pointer;border:1px solid var(--border);border-radius:8px;margin-bottom:4px;">${f.name} (${f.code})</div>`).join('');
+                });
+        }, 300);
+    }
+    function selectFamily(id, name) {
+        document.getElementById('familyId').value = id;
+        document.getElementById('familyResults').innerHTML = `<p style="color:var(--green-mid);font-weight:600;">✓ ${name} sélectionnée</p>`;
+    }
+</script>
+</body>
+</html>

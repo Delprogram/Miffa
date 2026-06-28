@@ -8,8 +8,8 @@
     <title>MIFFA — {{ member.first_name }} {{ member.last_name }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+            rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'global.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/css/dashboard.css' %}">
@@ -18,229 +18,329 @@
 
 <body>
 
-    <!-- ─── SIDEBAR ─── -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <a href="{% url 'indexOfAccounts' %}" class="logo">
-                <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
-                <span>MIFFA</span>
-            </a>
-            <button class="sidebar-toggle" onclick="toggleSidebar()">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-        </div>
+<!-- ─── SIDEBAR ─── -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="{% url 'indexOfAccounts' %}" class="logo">
+            <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+            <span>MIFFA</span>
+        </a>
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </div>
 
-        <div class="sidebar-user">
-            <div class="user-avatar">
-                {% if user.photo %}
-                <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
-                {% else %}
-                <div class="avatar-placeholder">
-                    {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
-                </div>
-                {% endif %}
+    <div class="sidebar-user">
+        <div class="user-avatar">
+            {% if user.photo %}
+            <img src="{{ user.photo.url }}" alt="{{ user.first_name }}">
+            {% else %}
+            <div class="avatar-placeholder">
+                {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
             </div>
-            <div class="user-info">
-                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
-                <span class="user-role">{{ user.get_role_display }}</span>
-            </div>
+            {% endif %}
         </div>
+        <div class="user-info">
+            <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+            <span class="user-role">{{ user.get_role_display }}</span>
+        </div>
+    </div>
 
-        <nav class="sidebar-nav">
-            <div class="nav-section-label">Menu principal</div>
-            <a href="{% url 'dashboard' %}" class="nav-item">
-                <i class="fa-solid fa-house"></i>
-                <span>Mon espace</span>
-            </a>
-            <a href="{% url 'members_list' %}" class="nav-item active">
-                <i class="fa-solid fa-users"></i>
-                <span>Membres</span>
-            </a>
-            <a href="{% url 'add_relation' %}" class="nav-item">
-        <i class="fa-solid fa-link"></i>
-        <span>Mes relations</span>
-        {% if pending_relation_count %}
-        <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Menu principal</div>
+        <a href="{% url 'dashboard' %}" class="nav-item">
+            <i class="fa-solid fa-house"></i>
+            <span>Mon espace</span>
+        </a>
+        <a href="{% url 'members_list' %}" class="nav-item active">
+            <i class="fa-solid fa-users"></i>
+            <span>Membres</span>
+        </a>
+        <a href="{% url 'add_relation' %}" class="nav-item">
+            <i class="fa-solid fa-link"></i>
+            <span>Mes relations</span>
+            {% if pending_relation_count %}
+            <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
             {{ pending_relation_count }}
         </span>
-        {% endif %}
-    </a>
-            <a href="{% url 'family_tree' %}" class="nav-item">
-                <i class="fa-solid fa-tree"></i>
-                <span>Arbre généalogique</span>
-            </a>
-            <a href="{% url 'timeline_view' %}" class="nav-item">
-                <i class="fa-solid fa-timeline"></i>
-                <span>Chronologie</span>
-            </a>
+            {% endif %}
+        </a>
+        <a href="{% url 'family_tree' %}" class="nav-item">
+            <i class="fa-solid fa-tree"></i>
+            <span>Arbre généalogique</span>
+        </a>
+        <a href="{% url 'timeline_view' %}" class="nav-item">
+            <i class="fa-solid fa-timeline"></i>
+            <span>Chronologie</span>
+        </a>
 
-            <div class="nav-section-label">Communication</div>
-            <a href="{% url 'news_feed' %}" class="nav-item">
-                <i class="fa-solid fa-newspaper"></i>
-                <span>Fil d'actualité</span>
-            </a>
+        <div class="nav-section-label">Communication</div>
+        <a href="{% url 'news_feed' %}" class="nav-item">
+            <i class="fa-solid fa-newspaper"></i>
+            <span>Fil d'actualité</span>
+        </a>
 
-            <div class="nav-section-label">Contenu</div>
-            <a href="{% url 'media_library' %}" class="nav-item">
-                <i class="fa-solid fa-images"></i>
-                <span>Médiathèque</span>
-            </a>
-            <a href="{% url 'calendar_view' %}" class="nav-item">
-                <i class="fa-solid fa-calendar-days"></i>
-                <span>Calendrier</span>
-            </a>
-            <a href="{% url 'notifications' %}" class="nav-item">
-                <i class="fa-solid fa-bell"></i>
-                <span>Notifications</span>
-                {% if unread_notif_count %}
-                <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+        <div class="nav-section-label">Contenu</div>
+        <a href="{% url 'media_library' %}" class="nav-item">
+            <i class="fa-solid fa-images"></i>
+            <span>Médiathèque</span>
+        </a>
+        <a href="{% url 'calendar_view' %}" class="nav-item">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Calendrier</span>
+        </a>
+        <a href="{% url 'notifications' %}" class="nav-item">
+            <i class="fa-solid fa-bell"></i>
+            <span>Notifications</span>
+            {% if unread_notif_count %}
+            <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
                     {{ unread_notif_count }}
                 </span>
-                {% endif %}
-            </a>
-
-            {% if user.role == 'admin' %}
-            <div class="nav-section-label">Administration</div>
-            <a href="{% url 'admin_panel' %}" class="nav-item">
-                <i class="fa-solid fa-shield-halved"></i>
-                <span>Administration</span>
-            </a>
             {% endif %}
-        </nav>
+        </a>
 
-        <div class="sidebar-footer">
-            <a href="{% url 'deconnexion' %}" class="nav-item logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Déconnexion</span>
+        {% if user.role == 'admin' %}
+        <div class="nav-section-label">Administration</div>
+        <a href="{% url 'admin_panel' %}" class="nav-item">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Administration</span>
+        </a>
+        {% endif %}
+    </nav>
+
+    <div class="sidebar-footer">
+        <a href="{% url 'deconnexion' %}" class="nav-item logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Déconnexion</span>
+        </a>
+    </div>
+</aside>
+
+<!-- ─── CONTENU PRINCIPAL ─── -->
+<main class="main-content">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <a href="{% url 'members_list' %}" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i> Retour aux membres
             </a>
         </div>
-    </aside>
+    </div>
 
-    <!-- ─── CONTENU PRINCIPAL ─── -->
-    <main class="main-content">
-
-        <!-- TOPBAR -->
-        <div class="topbar">
-            <div class="topbar-left">
-                <a href="{% url 'members_list' %}" class="back-link">
-                    <i class="fa-solid fa-arrow-left"></i> Retour aux membres
-                </a>
-            </div>
-        </div>
-
-        <!-- PROFIL MEMBRE -->
-        <section class="profile-section">
-            <div class="profile-card">
-                <div class="profile-cover"></div>
-                <div class="profile-body">
-                    <div class="profile-avatar">
-                        {% if member.photo %}
-                            <img src="{{ member.photo.url }}" alt="{{ member.first_name }}">
-                        {% else %}
-                            <div class="avatar-large">
-                                {{ member.first_name|first|upper }}{{ member.last_name|first|upper }}
-                            </div>
-                        {% endif %}
+    <!-- PROFIL MEMBRE -->
+    <section class="profile-section">
+        <div class="profile-card">
+            <div class="profile-cover"></div>
+            <div class="profile-body">
+                <div class="profile-avatar">
+                    {% if member.photo %}
+                    <img src="{{ member.photo.url }}" alt="{{ member.first_name }}">
+                    {% else %}
+                    <div class="avatar-large">
+                        {{ member.first_name|first|upper }}{{ member.last_name|first|upper }}
                     </div>
-
-                    <div class="profile-info">
-                        <div class="profile-name-row">
-                            <div>
-                                <h2>{{ member.first_name }} {{ member.last_name }}</h2>
-                                <span class="profile-username">@{{ member.username }}</span>
-                            </div>
-                            <span class="role-badge role-{{ member.role }}">{{ member.get_role_display }}</span>
-                        </div>
-                        {% if member.relation_to_family %}
-                        <p class="member-relation-tag">
-                            <i class="fa-solid fa-link"></i> {{ member.relation_to_family }} de la famille
-                        </p>
-                        {% endif %}
-                        <p class="profile-bio">{{ member.bio|default:"Aucune biographie renseignée." }}</p>
-                    </div>
-
-                    {% if member == user %}
-                    <a href="{% url 'dashboard' %}" class="btn-edit-profile">
-                        <i class="fa-solid fa-pen"></i> Modifier mon profil
-                    </a>
                     {% endif %}
                 </div>
 
-                <!-- DÉTAILS -->
-                <div class="profile-details">
-                    <div class="detail-item">
-                        <i class="fa-solid fa-cake-candles"></i>
+                <div class="profile-info">
+                    <div class="profile-name-row">
                         <div>
-                            <span class="detail-label">Date de naissance</span>
-                            <span class="detail-value">
+                            <h2>{{ member.first_name }} {{ member.last_name }}</h2>
+                            <span class="profile-username">@{{ member.username }}</span>
+                        </div>
+                        <span class="role-badge role-{{ member.role }}">{{ member.get_role_display }}</span>
+                    </div>
+                    {% if member.relation_to_family %}
+                    <p class="member-relation-tag">
+                        <i class="fa-solid fa-link"></i> {{ member.relation_to_family }} de la famille
+                    </p>
+                    {% endif %}
+                    <p class="profile-bio">{{ member.bio|default:"Aucune biographie renseignée." }}</p>
+                </div>
+
+                {% if member == user %}
+                <a href="{% url 'dashboard' %}" class="btn-edit-profile">
+                    <i class="fa-solid fa-pen"></i> Modifier mon profil
+                </a>
+                {% endif %}
+
+                <!-- Dans profile-body, après le bouton modifier -->
+                <button class="btn-edit-profile" onclick="openModal('publicInfoModal')"
+                        style="background:#e8f0fb;color:#1F4E79;border-color:#1F4E79;">
+                    <i class="fa-solid fa-eye"></i> Voir plus d'infos
+                </button>
+            </div>
+
+            <!-- DÉTAILS -->
+            <div class="profile-details">
+                <div class="detail-item">
+                    <i class="fa-solid fa-cake-candles"></i>
+                    <div>
+                        <span class="detail-label">Date de naissance</span>
+                        <span class="detail-value">
                                 {% if member.birth_date %}{{ member.birth_date|date:"d F Y" }}{% else %}Non renseignée{% endif %}
                             </span>
-                        </div>
                     </div>
-                    <div class="detail-item">
-                        <i class="fa-solid fa-envelope"></i>
-                        <div>
-                            <span class="detail-label">Email</span>
-                            <span class="detail-value">{{ member.email|default:"Non renseigné" }}</span>
-                        </div>
+                </div>
+
+                <div class="detail-item">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <div>
+                        <span class="detail-label">Profession</span>
+                        <span class="detail-value">
+            {% if member.profession and not member.hide_profession %}
+                {{ member.profession }}
+            {% else %}
+                Non renseignée
+            {% endif %}
+        </span>
                     </div>
-                    <div class="detail-item">
-                        <i class="fa-solid fa-calendar-check"></i>
-                        <div>
-                            <span class="detail-label">Membre depuis</span>
-                            <span class="detail-value">{{ member.date_joined|date:"F Y" }}</span>
-                        </div>
+                </div>
+                <div class="detail-item">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <div>
+                        <span class="detail-label">Membre depuis</span>
+                        <span class="detail-value">{{ member.date_joined|date:"F Y" }}</span>
                     </div>
-                    <div class="detail-item">
-                        <i class="fa-solid fa-circle-check"></i>
-                        <div>
-                            <span class="detail-label">Statut</span>
-                            <span class="detail-value status-active">Actif</span>
-                        </div>
+                </div>
+
+                <div class="detail-item">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <div>
+                        <span class="detail-label">Statut</span>
+                        <span class="detail-value {% if member.is_deceased %}status-deceased{% else %}status-active{% endif %}">
+            {% if member.is_deceased %}
+                Décédé(e) {% if member.deceased_at %}— {{ member.deceased_at|date:"d/m/Y" }}{% endif %}
+            {% else %}
+                Vivant(e)
+            {% endif %}
+        </span>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- LIENS FAMILIAUX -->
-        <section class="admin-section">
-            <h3 class="section-title">
-                <i class="fa-solid fa-people-arrows"></i> Liens familiaux
+    <!-- LIENS FAMILIAUX -->
+    <section class="admin-section">
+        <h3 class="section-title">
+            <i class="fa-solid fa-people-arrows"></i> Liens familiaux
+        </h3>
+        {% if relations %}
+        <div class="relations-grid">
+            {% for rel in relations %}
+            <a href="{% url 'member_profile' rel.related_member.id %}" class="relation-card">
+                {% if rel.related_member.photo %}
+                <img src="{{ rel.related_member.photo.url }}" alt="{{ rel.related_member.first_name }}">
+                {% else %}
+                <div class="avatar-placeholder-sm">
+                    {{ rel.related_member.first_name|first|upper }}{{ rel.related_member.last_name|first|upper }}
+                </div>
+                {% endif %}
+                <div>
+                    <span class="relation-name">{{ rel.related_member.first_name }} {{ rel.related_member.last_name }}</span>
+                    <span class="relation-type">{{ rel.get_relation_type_display }}</span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fa-solid fa-link-slash"></i>
+            <p>Aucun lien familial défini pour le moment.</p>
+        </div>
+        {% endif %}
+    </section>
+
+</main>
+
+<div class="modal-overlay" id="publicInfoModal" onclick="closeModal('publicInfoModal')">
+    <div class="modal modal-small" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-eye" style="color:var(--green-mid);margin-right:8px;"></i>
+                Infos publiques de {{ member.first_name }}
             </h3>
-            {% if relations %}
-            <div class="relations-grid">
-                {% for rel in relations %}
-                <a href="{% url 'member_profile' rel.related_member.id %}" class="relation-card">
-                    {% if rel.related_member.photo %}
-                        <img src="{{ rel.related_member.photo.url }}" alt="{{ rel.related_member.first_name }}">
-                    {% else %}
-                        <div class="avatar-placeholder-sm">
-                            {{ rel.related_member.first_name|first|upper }}{{ rel.related_member.last_name|first|upper }}
-                        </div>
-                    {% endif %}
+            <button onclick="closeModal('publicInfoModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-form">
+            <div class="public-info-list">
+
+                {% if not member.hide_profession and member.profession %}
+                <div class="public-info-item">
+                    <i class="fa-solid fa-briefcase"></i>
                     <div>
-                        <span class="relation-name">{{ rel.related_member.first_name }} {{ rel.related_member.last_name }}</span>
-                        <span class="relation-type">{{ rel.get_relation_type_display }}</span>
+                        <span class="detail-label">Profession</span>
+                        <span class="detail-value">{{ member.profession }}</span>
                     </div>
-                </a>
-                {% endfor %}
-            </div>
-            {% else %}
-            <div class="empty-state">
-                <i class="fa-solid fa-link-slash"></i>
-                <p>Aucun lien familial défini pour le moment.</p>
-            </div>
-            {% endif %}
-        </section>
+                </div>
+                {% endif %}
 
-    </main>
+                {% if not member.hide_email and member.email %}
+                <div class="public-info-item">
+                    <i class="fa-solid fa-envelope"></i>
+                    <div>
+                        <span class="detail-label">Email</span>
+                        <span class="detail-value">{{ member.email }}</span>
+                    </div>
+                </div>
+                {% endif %}
 
-    <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-            document.querySelector('.main-content').classList.toggle('expanded');
-        }
-    </script>
+                {% if not member.hide_phone and member.phone %}
+                <div class="public-info-item">
+                    <i class="fa-solid fa-phone"></i>
+                    <div>
+                        <span class="detail-label">Téléphone</span>
+                        <span class="detail-value">{{ member.phone }}</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if not member.hide_city and member.city %}
+                <div class="public-info-item">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <div>
+                        <span class="detail-label">Ville</span>
+                        <span class="detail-value">{{ member.city }}</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if not member.hide_birth_date and member.birth_date %}
+                <div class="public-info-item">
+                    <i class="fa-solid fa-cake-candles"></i>
+                    <div>
+                        <span class="detail-label">Date de naissance</span>
+                        <span class="detail-value">{{ member.birth_date|date:"d F Y" }}</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if not member.profession and not member.email and not member.phone and not member.city %}
+                <p style="color:var(--text-light);font-size:0.9rem;text-align:center;padding:1rem 0;">
+                    Aucune information publique renseignée.
+                </p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+        document.querySelector('.main-content').classList.toggle('expanded');
+    }
+    function openModal(id) {
+document.getElementById(id).classList.add('open');
+document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+document.getElementById(id).classList.remove('open');
+document.body.style.overflow = '';
+}
+</script>
 
 </body>
 

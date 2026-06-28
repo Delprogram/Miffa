@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIFFA — Supprimer mon compte</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'accounts/css/confirm_delete.css' %}">
+</head>
+<body>
+<div class="delete-wrapper">
+    <div class="delete-card">
+        <div class="delete-icon-wrap">
+            <i class="fa-solid fa-trash"></i>
+        </div>
+        <h2>Supprimer mon compte</h2>
+        <p class="subtitle">
+            Cette action est <span class="warning-text">irréversible</span>.<br>
+            Toutes vos données, relations et publications seront définitivement supprimées.
+        </p>
+        <div class="delete-divider"></div>
+        <p class="subtitle">Êtes-vous sûr de vouloir continuer ?</p>
+        <form method="POST" class="delete-actions">
+            {% csrf_token %}
+            <button type="submit" class="btn-confirm-delete">
+                <i class="fa-solid fa-trash"></i> Oui, supprimer définitivement
+            </button>
+            <a href="{% url 'dashboard' %}" class="btn-cancel-delete">
+                <i class="fa-solid fa-arrow-left"></i> Annuler — retour au dashboard
+            </a>
+        </form>
+        <p class="delete-note">
+            <i class="fa-solid fa-lock"></i>
+            Action sécurisée — aucune récupération possible après confirmation
+        </p>
+    </div>
+</div>
+</body>
+</html>

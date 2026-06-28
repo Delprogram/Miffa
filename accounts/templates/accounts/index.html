@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MIFFA - Votre famille, réunie</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'global.css' %}">
     <link rel="stylesheet" href="{% static 'accounts/css/style.css' %}">
@@ -14,150 +15,153 @@
 
 <body>
 
-    <!-- NAVBAR -->
-    <header class="navbar" id="navbar">
-        <a href="{% url 'indexOfAccounts' %}" class="logo">
-            <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
-            MIFFA
-        </a>
-        <nav class="nav-links">
-            <a href="#">Fonctionnalités</a>
-            <a href="#">À propos</a>
-            <a href="{% url 'register' %}" class="btn-nav">S'inscrire</a>
-            <a href="{% url 'login' %}" class="btn-nav">Connexion</a>
-        </nav>
-    </header>
+<!-- NAVBAR -->
+<header class="navbar" id="navbar">
+    <a href="{% url 'indexOfAccounts' %}" class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-seedling"></i></div>
+        MIFFA
+    </a>
+    <nav class="nav-links">
+        <a href="#">Fonctionnalités</a>
+        <a href="#">À propos</a>
+        <a href="{% url 'register' %}" class="btn-nav">S'inscrire</a>
+        <a href="{% url 'login' %}" class="btn-nav">Connexion</a>
+    </nav>
+</header>
 
-    <!-- HERO -->
-    <section class="hero">
-        <div class="hero-bg"></div>
-        <div class="hero-leaves">
-            <div class="leaf"></div>
-            <div class="leaf"></div>
-            <div class="leaf"></div>
-            <div class="leaf"></div>
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-leaves">
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+        <div class="leaf"></div>
+    </div>
+    <div class="hero-content">
+        <div class="hero-badge">
+            <i class="fa-solid fa-seedling"></i>
+            Votre espace familial privé
         </div>
-        <div class="hero-content">
-            <div class="hero-badge">
-                <i class="fa-solid fa-seedling"></i>
-                Votre espace familial privé
-            </div>
-            <h1>Réunissez votre famille,<br><em>préservez votre histoire</em></h1>
-            <p>MIFFA est une plateforme privée qui renforce les liens familiaux, conserve les souvenirs et connecte chaque génération.</p>
-            <div class="hero-actions">
-                <a href="{% url 'register' %}" class="btn-primary">
-                    <i class="fa-solid fa-users" style="margin-right:8px"></i>Créer votre espace
-                </a>
-                <a href="#modules" class="btn-secondary">Découvrir les fonctionnalités</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- STATS -->
-    <div class="stats-bar">
-        <div class="stat">
-            <div class="stat-number">100%</div>
-            <div class="stat-label">Privé & sécurisé</div>
-        </div>
-        <div class="stat">
-            <div class="stat-number">6</div>
-            <div class="stat-label">Modules intégrés</div>
-        </div>
-        <div class="stat">
-            <div class="stat-number">∞</div>
-            <div class="stat-label">Souvenirs partagés</div>
-        </div>
-        <div class="stat">
-            <div class="stat-number">Multi</div>
-            <div class="stat-label">Générations connectées</div>
+        <h1>Réunissez votre famille,<br><em>préservez votre histoire</em></h1>
+        <p>MIFFA est une plateforme privée qui renforce les liens familiaux, conserve les souvenirs et connecte chaque
+            génération.</p>
+        <div class="hero-actions">
+            <a href="{% url 'register' %}" class="btn-primary">
+                <i class="fa-solid fa-users" style="margin-right:8px"></i>Créer votre espace
+            </a>
+            <a href="#modules" class="btn-secondary">Découvrir les fonctionnalités</a>
         </div>
     </div>
+</section>
 
-    <!-- MODULES -->
-    <section class="modules-section" id="modules">
-        <div class="section-header">
-            <div class="section-tag">Fonctionnalités</div>
-            <h2>Tout ce dont votre famille a besoin</h2>
-            <p>Six modules conçus pour renforcer les liens et préserver la mémoire familiale.</p>
+<!-- STATS -->
+<div class="stats-bar">
+    <div class="stat">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Privé & sécurisé</div>
+    </div>
+    <div class="stat">
+        <div class="stat-number">6</div>
+        <div class="stat-label">Modules intégrés</div>
+    </div>
+    <div class="stat">
+        <div class="stat-number">∞</div>
+        <div class="stat-label">Souvenirs partagés</div>
+    </div>
+    <div class="stat">
+        <div class="stat-number">Multi</div>
+        <div class="stat-label">Générations connectées</div>
+    </div>
+</div>
+
+<!-- MODULES -->
+<section class="modules-section" id="modules">
+    <div class="section-header">
+        <div class="section-tag">Fonctionnalités</div>
+        <h2>Tout ce dont votre famille a besoin</h2>
+        <p>Six modules conçus pour renforcer les liens et préserver la mémoire familiale.</p>
+    </div>
+    <div class="modules-grid">
+        <div class="module-card">
+            <div class="module-icon"><i class="fa-solid fa-users"></i></div>
+            <h3>Membres</h3>
+            <p>Créez et gérez les profils détaillés de chaque membre avec biographie, frise de vie et relations
+                familiales.</p>
         </div>
-        <div class="modules-grid">
-            <div class="module-card">
-                <div class="module-icon"><i class="fa-solid fa-users"></i></div>
-                <h3>Membres</h3>
-                <p>Créez et gérez les profils détaillés de chaque membre avec biographie, frise de vie et relations familiales.</p>
-            </div>
-            <div class="module-card">
-                <div class="module-icon"><i class="fa-solid fa-tree"></i></div>
-                <h3>Arbre généalogique</h3>
-                <p>Visualisez et explorez les liens familiaux à travers un arbre interactif, zoomable et exportable.</p>
-            </div>
-            <div class="module-card">
-                <div class="module-icon"><i class="fa-solid fa-comments"></i></div>
-                <h3>Messagerie</h3>
-                <p>Discutez en temps réel, en privé ou en groupe, et partagez photos et documents directement dans le chat.</p>
-            </div>
-            <div class="module-card">
-                <div class="module-icon"><i class="fa-solid fa-images"></i></div>
-                <h3>Médiathèque</h3>
-                <p>Centralisez photos, vidéos et documents familiaux dans un espace organisé et sécurisé.</p>
-            </div>
-            <div class="module-card">
-                <div class="module-icon"><i class="fa-solid fa-calendar-days"></i></div>
-                <h3>Événements</h3>
-                <p>Organisez anniversaires et réunions familiales avec RSVP, rappels automatiques et calendrier partagé.</p>
-            </div>
-            <div class="module-card">
-                <div class="module-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                <h3>Espace privé</h3>
-                <p>Chaque famille dispose de son propre espace isolé, avec gestion des accès et approbation des membres.</p>
-            </div>
+        <div class="module-card">
+            <div class="module-icon"><i class="fa-solid fa-tree"></i></div>
+            <h3>Arbre généalogique</h3>
+            <p>Visualisez et explorez les liens familiaux à travers un arbre interactif, zoomable et exportable.</p>
         </div>
-    </section>
-
-    <!-- HOW IT WORKS -->
-    <section class="how-section">
-        <div class="section-header">
-            <div class="section-tag">Comment ça marche</div>
-            <h2>Rejoindre votre famille en 3 étapes</h2>
+        <div class="module-card">
+            <div class="module-icon"><i class="fa-solid fa-comments"></i></div>
+            <h3>Messagerie</h3>
+            <p>Discutez en temps réel, en privé ou en groupe, et partagez photos et documents directement dans le
+                chat.</p>
         </div>
-        <div class="steps">
-            <div class="step">
-                <div class="step-number">1</div>
-                <h3>Créez votre compte</h3>
-                <p>Inscrivez-vous en quelques secondes avec votre email.</p>
-            </div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <h3>Rejoignez votre famille</h3>
-                <p>Trouvez votre espace familial et faites une demande d'accès.</p>
-            </div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <h3>Connectez-vous</h3>
-                <p>Une fois approuvé, accédez à tous les souvenirs et discussions.</p>
-            </div>
+        <div class="module-card">
+            <div class="module-icon"><i class="fa-solid fa-images"></i></div>
+            <h3>Médiathèque</h3>
+            <p>Centralisez photos, vidéos et documents familiaux dans un espace organisé et sécurisé.</p>
         </div>
-    </section>
+        <div class="module-card">
+            <div class="module-icon"><i class="fa-solid fa-calendar-days"></i></div>
+            <h3>Événements</h3>
+            <p>Organisez anniversaires et réunions familiales avec RSVP, rappels automatiques et calendrier partagé.</p>
+        </div>
+        <div class="module-card">
+            <div class="module-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <h3>Espace privé</h3>
+            <p>Chaque famille dispose de son propre espace isolé, avec gestion des accès et approbation des membres.</p>
+        </div>
+    </div>
+</section>
 
-    <!-- CTA -->
-    <section class="cta-section">
-        <h2>Prêt à réunir votre famille ?</h2>
-        <p>Créez votre espace familial gratuitement dès aujourd'hui.</p>
-        <a href="{% url 'register' %}" class="btn-white">
-            Commencer maintenant <i class="fa-solid fa-arrow-right" style="margin-left:8px"></i>
-        </a>
-    </section>
+<!-- HOW IT WORKS -->
+<section class="how-section">
+    <div class="section-header">
+        <div class="section-tag">Comment ça marche</div>
+        <h2>Rejoindre votre famille en 3 étapes</h2>
+    </div>
+    <div class="steps">
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Créez votre compte</h3>
+            <p>Inscrivez-vous en quelques secondes avec votre email.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Rejoignez votre famille</h3>
+            <p>Trouvez votre espace familial et faites une demande d'accès.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Connectez-vous</h3>
+            <p>Une fois approuvé, accédez à tous les souvenirs et discussions.</p>
+        </div>
+    </div>
+</section>
 
-    <!-- FOOTER -->
-    <footer>
-        <p>© 2026 <span>MIFFA</span> — Plateforme familiale sécurisée. Tous droits réservés.</p>
-    </footer>
+<!-- CTA -->
+<section class="cta-section">
+    <h2>Prêt à réunir votre famille ?</h2>
+    <p>Créez votre espace familial gratuitement dès aujourd'hui.</p>
+    <a href="{% url 'register' %}" class="btn-white">
+        Commencer maintenant <i class="fa-solid fa-arrow-right" style="margin-left:8px"></i>
+    </a>
+</section>
 
-    <script>
-        window.addEventListener('scroll', () => {
-            document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
-        });
-    </script>
+<!-- FOOTER -->
+<footer>
+    <p>© 2026 <span>MIFFA</span> — Plateforme familiale sécurisée. Tous droits réservés.</p>
+</footer>
+
+<script>
+    window.addEventListener('scroll', () => {
+        document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+    });
+</script>
 
 </body>
 </html>

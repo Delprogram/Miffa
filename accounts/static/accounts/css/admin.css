@@ -297,3 +297,71 @@
     }
     .danger-card { flex-direction: column; align-items: flex-start; }
 }
+
+/* ─── BOUTONS D'ACTION MEMBRE ─── */
+.btn-action {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-action:hover {
+    transform: translateY(-1px);
+}
+
+/* Marquer décédé / vivant */
+.btn-action.btn-gray {
+    background: #f0f0f0;
+    color: #616161;
+}
+.btn-action.btn-gray:hover {
+    background: #616161;
+    color: white;
+}
+
+.btn-action.btn-green {
+    background: var(--green-light);
+    color: var(--green-mid);
+}
+.btn-action.btn-green:hover {
+    background: var(--green-mid);
+    color: white;
+}
+
+/* Désigner admin */
+.btn-action.btn-blue {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+.btn-action.btn-blue:hover {
+    background: #1565c0;
+    color: white;
+}
+
+/* Retirer admin */
+.btn-action.btn-orange {
+    background: #fff3e0;
+    color: #e65100;
+}
+.btn-action.btn-orange:hover {
+    background: #e65100;
+    color: white;
+}
+
+/* Initier un vote de suppression */
+.btn-action.btn-red {
+    background: #fdecea;
+    color: var(--red);
+}
+.btn-action.btn-red:hover {
+    background: var(--red);
+    color: white;
+}
