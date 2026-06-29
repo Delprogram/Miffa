@@ -1,0 +1,223 @@
+/* ─── TABLE OF CONTENTS ─── */
+.guide-toc {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.guide-toc a {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 16px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    color: var(--text-mid);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.guide-toc a:hover {
+    border-color: var(--green-mid);
+    color: var(--green-mid);
+    background: var(--green-light);
+}
+
+.guide-toc a i { font-size: 12px; color: var(--green-mid); }
+
+/* ─── SECTIONS ─── */
+.guide-section {
+    margin-bottom: 48px;
+    scroll-margin-top: 20px;
+}
+
+.guide-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--green-deep);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.guide-section h2 i {
+    color: var(--green-mid);
+    font-size: 19px;
+}
+
+/* ─── CARD ─── */
+.guide-card {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    padding: 28px;
+}
+
+.guide-text {
+    font-size: 14.5px;
+    color: var(--text-mid);
+    line-height: 1.7;
+    margin-bottom: 16px;
+}
+
+.guide-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.guide-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.5;
+}
+
+.guide-list li i {
+    color: var(--green-mid);
+    margin-top: 2px;
+    flex-shrink: 0;
+    font-size: 13px;
+}
+
+/* ─── STEPS ─── */
+.guide-step {
+    display: flex;
+    gap: 18px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.guide-step:last-child { border-bottom: none; padding-bottom: 0; }
+.guide-step:first-child { padding-top: 0; }
+
+.step-num {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+.guide-step h4 {
+    font-size: 15px;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+}
+
+.guide-step p {
+    font-size: 13.5px;
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+.guide-step strong { color: var(--green-mid); }
+
+/* ─── GRID TILES ─── */
+.guide-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.guide-tile {
+    background: var(--white);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    padding: 22px 20px;
+    transition: transform 0.2s;
+}
+
+.guide-tile:hover { transform: translateY(-3px); }
+
+.guide-tile i {
+    font-size: 24px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.guide-tile h4 {
+    font-size: 14.5px;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+}
+
+.guide-tile p {
+    font-size: 13px;
+    color: var(--text-light);
+    line-height: 1.55;
+}
+
+/* ─── FAQ ─── */
+.guide-faq {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.faq-item {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 14px 18px;
+    box-shadow: var(--shadow);
+}
+
+.faq-item summary {
+    cursor: pointer;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--text-dark);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.faq-item summary::before {
+    content: '\f054';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 10px;
+    color: var(--green-mid);
+    transition: transform 0.2s;
+}
+
+.faq-item[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.faq-item p {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 13.5px;
+    color: var(--text-mid);
+    line-height: 1.6;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 600px) {
+    .guide-toc { gap: 6px; }
+    .guide-toc a { font-size: 12.5px; padding: 7px 12px; }
+    .guide-card { padding: 20px; }
+    .guide-step { flex-direction: column; gap: 8px; }
+}

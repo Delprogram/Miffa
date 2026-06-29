@@ -14,6 +14,12 @@ class CustomUserCreationForm(UserCreationForm):
         error_messages={'required': "L'adresse email est obligatoire."}
     )
 
+    gender = forms.ChoiceField(
+        choices=User.GENDER_CHOICES,
+        required=True,
+        error_messages={'required': "Veuillez indiquer votre sexe."}
+    )
+
     birth_date = forms.DateField(
         required=True,
         widget=forms.DateInput(attrs={
@@ -41,6 +47,7 @@ class CustomUserCreationForm(UserCreationForm):
             'email',
             'first_name',
             'last_name',
+            'gender',
             'role',
             'photo',
             'bio',

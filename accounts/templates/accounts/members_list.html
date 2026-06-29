@@ -162,7 +162,10 @@
                 {% endif %}
             </div>
             <div class="member-card-body">
-                <h3>{{ member.first_name }} {{ member.last_name }}</h3>
+                <h3>{{ member.first_name }} {{ member.last_name }}
+                    <i class="fa-solid {% if member.gender == 'M' %}fa-mars{% else %}fa-venus{% endif %}"
+                       style="color:{% if member.gender == 'M' %}#1565c0{% else %}#c2185b{% endif %}; font-size:0.7em; margin-left:4px;"
+                       title="{{ member.get_gender_display }}"></i></h3>
                 <span class="role-badge role-{{ member.role }}">{{ member.get_role_display }}</span>
                 {% if member.relation_to_family %}
                 <p class="member-relation">

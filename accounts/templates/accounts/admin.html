@@ -261,7 +261,11 @@
                         {{ member.first_name|first|upper }}{{ member.last_name|first|upper }}
                     </div>
                     {% endif %}
-                    <span>{{ member.first_name }} {{ member.last_name }}</span>
+                    <span>
+                        {{ member.first_name }} {{ member.last_name }}
+                        <i class="fa-solid {% if member.gender == 'M' %}fa-mars{% else %}fa-venus{% endif %}"
+                           style="color:{% if member.gender == 'M' %}#1565c0{% else %}#c2185b{% endif %};font-size:0.85em;margin-left:4px;"></i>
+                    </span>
                 </div>
                 <span class="member-cell">
                         <span class="role-badge role-{{ member.role }}">{{ member.get_role_display }}</span>

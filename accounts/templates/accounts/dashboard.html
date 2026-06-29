@@ -237,7 +237,8 @@
             <!-- BANNIÈRE -->
             <div class="profile-cover-wrapper">
                 {% if user.family.banner %}
-                <img src="{{ user.family.banner.url }}" alt="Bannière" class="profile-cover-img">
+                <img src="{{ user.family.banner.url }}" alt="Bannière" class="profile-cover-img"
+                     onclick="openPhotoViewer('{{ user.family.banner.url }}')">
                 {% else %}
                 <div class="profile-cover"></div>
                 {% endif %}
@@ -267,9 +268,15 @@
                 <div class="profile-info">
                     <div class="profile-name-row">
                         <div>
-                            <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                            <h2>
+                                {{ user.first_name }} {{ user.last_name }}
+                                <i class="fa-solid {% if user.gender == 'M' %}fa-mars{% else %}fa-venus{% endif %}"
+                                   style="color:{% if user.gender == 'M' %}#1565c0{% else %}#c2185b{% endif %}; font-size:0.7em; margin-left:6px;"
+                                   title="{{ user.get_gender_display }}"></i>
+                            </h2>
                             <span class="profile-username">@{{ user.username }}</span>
                         </div>
+
                         <span class="role-badge role-{{ user.role }}">{{ user.get_role_display }}</span>
                     </div>
                     <p class="profile-bio">{{ user.bio|default:"" }}</p>

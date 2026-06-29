@@ -276,6 +276,7 @@ def join_family(request):
 
 User = get_user_model()
 
+
 @login_required
 def user_guide(request):
     return render(request, 'accounts/user_guide.html')
@@ -392,7 +393,7 @@ def add_relation(request):
         Notification.objects.create(
             user=related_member,
             type='relation_request',
-            message=f"{request.user.first_name} {request.user.last_name} souhaite vous définir comme {dict(RelationRequest.RELATION_CHOICES).get(relation_type)}.",
+            message=f"{request.user.first_name} {request.user.last_name} souhaite vous définir comme {dict(Relation.RELATION_CHOICES).get(relation_type)}.",
             link='/accounts/relations/add/'
         )
         relation_url = request.build_absolute_uri('/accounts/relations/add/')
@@ -401,7 +402,7 @@ def add_relation(request):
             message=(
                 f"Bonjour {related_member.first_name},\n\n"
                 f"{request.user.first_name} {request.user.last_name} souhaite vous définir comme "
-                f"{dict(RelationRequest.RELATION_CHOICES).get(relation_type)} dans votre arbre familial.\n"
+                f"{dict(Relation.RELATION_CHOICES).get(relation_type)} dans votre arbre familial.\n"
                 f"Connectez-vous pour accepter ou refuser :\n"
                 f"{relation_url}\n\n— MIFFA"
             ),
@@ -510,8 +511,7 @@ def family_tree(request):
         member__family=family
     ).select_related('member', 'related_member')
 
-    # ─── 1. Construit un graphe bidirectionnel ───
-    # graph[user_id] = liste de (other_user_obj, relation_type, is_outgoing)
+    # ─── 1. Graphe bidirectionnel ───
     graph = {}
 
     def add_edge(a, b, rel_type):
@@ -522,12 +522,10 @@ def family_tree(request):
         inverse_type = RELATION_INVERSE.get(rel.relation_type, 'autre')
         add_edge(rel.related_member, rel.member, inverse_type)
 
-    # ─── 2. BFS depuis l'utilisateur courant pour assigner générations ───
+    # ─── 2. BFS pour générations ───
     from collections import deque
-
-    visited = {request.user.id: (request.user, 0, 'Vous')}  # id -> (member_obj, generation, label)
+    visited = {request.user.id: (request.user, 0, 'Vous')}
     queue = deque([request.user.id])
-
     while queue:
         current_id = queue.popleft()
         current_gen = visited[current_id][1]
@@ -538,80 +536,31 @@ def family_tree(request):
                 visited[neighbor.id] = (neighbor, current_gen + delta, label)
                 queue.append(neighbor.id)
 
-    # ─── 3. Regroupe par génération ───
+    # ─── 3. Regroupement par génération ───
     by_generation = {}
     for member_id, (member_obj, gen, label) in visited.items():
         by_generation.setdefault(gen, []).append((member_obj, label, member_id))
 
-    # ─── 4. Calcule les positions ───
-    nodes = []
-    node_positions = {}  # id -> (x, y)
-    node_w_gap = 130
-    gen_gap = 160
-    center_x = 550
+    # ─── 4. Positions (cartes 160×190) ───
+    CARD_W = 160
+    CARD_H = 190
+    H_GAP = 40  # espace horizontal entre cartes
+    V_GAP = 100  # espace vertical entre générations
 
+    node_positions = {}
+    nodes = []
     sorted_gens = sorted(by_generation.keys())
     min_gen = sorted_gens[0] if sorted_gens else 0
 
+    center_x = 600
+
     for gen in sorted_gens:
         members_in_gen = by_generation[gen]
-        y = (gen - min_gen) * gen_gap + 80
-        start_x = center_x - (len(members_in_gen) - 1) * node_w_gap / 2
+        n = len(members_in_gen)
+        total_w = n * CARD_W + (n - 1) * H_GAP
+        start_x = center_x - total_w / 2 + CARD_W / 2
+        y = (gen - min_gen) * (CARD_H + V_GAP) + CARD_H // 2 + 40
 
-        for i, (member_obj, label, member_id) in enumerate(members_in_gen):
-            x = start_x + i * node_w_gap
-            node_positions[member_id] = (x, y)
-
-            if member_id == request.user.id:
-                category = 'self'
-            elif gen < 0:
-                category = 'ascendant'
-            elif gen > 0:
-                category = 'descendant'
-            else:
-                category = 'self'
-
-            nodes.append({
-                'member': member_obj,
-                'category': category,
-                'relation_label': label,
-                'x': x, 'y': y,
-            })
-
-    # ─── 5. Construit les liens (arêtes uniques) ───
-    links = []
-    seen_edges = set()
-    for rel in all_relations:
-        if rel.member.id in node_positions and rel.related_member.id in node_positions:
-            edge_key = frozenset([rel.member.id, rel.related_member.id])
-            if edge_key in seen_edges:
-                continue
-            seen_edges.add(edge_key)
-
-            x1, y1 = node_positions[rel.member.id]
-            x2, y2 = node_positions[rel.related_member.id]
-
-            if rel.member.id == request.user.id or rel.related_member.id == request.user.id:
-                link_type = 'self'
-            elif rel.relation_type in ['parent', 'grand_parent', 'oncle_tante']:
-                link_type = 'ascendant'
-            else:
-                link_type = 'descendant'
-
-            links.append({'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2, 'type': link_type})
-
-    svg_width = max(1100, center_x + 450)
-    svg_height = max(560, (len(sorted_gens) * gen_gap) + 200)
-
-    # ─── 6. Résumé par génération pour la barre d'indicateurs ───
-    generation_labels = {
-        -3: "Arrière-grands-parents", -2: "Grands-parents", -1: "Parents",
-        0: "Votre génération", 1: "Enfants", 2: "Petits-enfants", 3: "Arrière-petits-enfants",
-    }
-
-    generation_summary = []
-    for gen in sorted_gens:
-        count = len(by_generation[gen])
         if gen < 0:
             category = 'ascendant'
         elif gen > 0:
@@ -619,12 +568,113 @@ def family_tree(request):
         else:
             category = 'self'
 
-        label = generation_labels.get(gen, f"Génération {gen:+d}")
+        for i, (member_obj, label, member_id) in enumerate(members_in_gen):
+            x = start_x + i * (CARD_W + H_GAP)
+            node_positions[member_id] = (int(x), int(y))
+            nodes.append({
+                'member': member_obj,
+                'category': category,
+                'relation_label': label,
+                'x': int(x),
+                'y': int(y),
+                'is_self': member_id == request.user.id,
+            })
+
+    # ─── 5. Liens style "arbre de couple" ───
+    links = []
+
+    # Détecte les couples (conjoints au même niveau de génération)
+    couple_pairs = set()
+    for rel in all_relations:
+        if rel.relation_type in ['conjoint', 'epoux', 'epouse']:  # adapte selon tes types
+            mid = rel.member.id
+            rid = rel.related_member.id
+            if mid in node_positions and rid in node_positions:
+                couple_pairs.add(frozenset([mid, rid]))
+
+    # Calcule le point central de chaque couple
+    couple_midpoints = {}  # frozenset([id1,id2]) -> (mid_x, y)
+    for pair in couple_pairs:
+        id1, id2 = list(pair)
+        x1, y1 = node_positions[id1]
+        x2, y2 = node_positions[id2]
+        cx = (x1 + x2) // 2
+        cy = y1  # même génération
+        couple_midpoints[pair] = (cx, cy)
+
+        # Lien horizontal entre les deux conjoints
+        links.append({
+            'type': 'couple',
+            'path': f"M {x1} {cy} H {x2}",
+        })
+
+    # Pour chaque enfant, cherche ses parents et relie via le midpoint du couple
+    seen_edges = set()
+    for rel in all_relations:
+        if rel.relation_type not in ['enfant', 'fils', 'fille', 'child']:  # adapte
+            continue
+        parent_id = rel.member.id
+        child_id = rel.related_member.id
+        if parent_id not in node_positions or child_id not in node_positions:
+            continue
+
+        px, py = node_positions[parent_id]
+        cx, cy = node_positions[child_id]
+
+        # Cherche si ce parent fait partie d'un couple
+        parent_couple = next(
+            (pair for pair in couple_midpoints if parent_id in pair), None
+        )
+
+        if parent_couple:
+            mx, my = couple_midpoints[parent_couple]
+            drop_y = my + 95  # bas des cartes parents
+            mid_y = (drop_y + cy - 95) // 2
+
+            edge_key = frozenset([parent_couple, child_id])
+            if edge_key not in seen_edges:
+                seen_edges.add(edge_key)
+                # Ligne verticale depuis le milieu du couple vers la barre horizontale
+                links.append({
+                    'type': 'descendant',
+                    'path': f"M {mx} {drop_y} V {mid_y}",
+                    '_anchor_x': mx,
+                    '_anchor_y': mid_y,
+                    '_couple': parent_couple,
+                })
+
+            # Branche depuis la barre vers l'enfant
+            links.append({
+                'type': 'descendant',
+                'path': f"M {mx} {mid_y} H {cx} V {cy - 95}",
+            })
+        else:
+            # Parent seul → lien direct orthogonal
+            mid_y = (py + cy) // 2
+            links.append({
+                'type': 'descendant',
+                'path': f"M {px} {py + 95} V {mid_y} H {cx} V {cy - 95}",
+            })
+
+    svg_width = max(1200, center_x + 600)
+    svg_height = max(600, (len(sorted_gens) * (CARD_H + V_GAP)) + 200)
+
+    # ─── 6. Résumé générations ───
+    generation_labels = {
+        -3: "Arrière-grands-parents", -2: "Grands-parents", -1: "Parents",
+        0: "Votre génération", 1: "Enfants", 2: "Petits-enfants", 3: "Arrière-petits-enfants",
+    }
+    generation_summary = []
+    for gen in sorted_gens:
+        count = len(by_generation[gen])
+        category = 'ascendant' if gen < 0 else ('descendant' if gen > 0 else 'self')
         generation_summary.append({
-            'label': label,
+            'label': generation_labels.get(gen, f"Génération {gen:+d}"),
             'count': count,
             'category': category,
         })
+
+
 
     return render(request, 'accounts/family_tree.html', {
         'nodes': nodes,
@@ -632,13 +682,6 @@ def family_tree(request):
         'svg_width': svg_width,
         'svg_height': svg_height,
         'generation_summary': generation_summary,
-    })
-
-    return render(request, 'accounts/family_tree.html', {
-        'nodes': nodes,
-        'links': links,
-        'svg_width': svg_width,
-        'svg_height': svg_height,
     })
 
 

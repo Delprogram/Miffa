@@ -56,6 +56,15 @@
             <i class="fa-solid fa-users"></i>
             <span>Membres</span>
         </a>
+        <a href="{% url 'add_relation' %}" class="nav-item">
+            <i class="fa-solid fa-link"></i>
+            <span>Mes relations</span>
+            {% if pending_relation_count %}
+            <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+                    {{ pending_relation_count }}
+                </span>
+            {% endif %}
+        </a>
         <a href="{% url 'family_tree' %}" class="nav-item">
             <i class="fa-solid fa-tree"></i>
             <span>Arbre généalogique</span>
@@ -79,6 +88,15 @@
         <a href="{% url 'calendar_view' %}" class="nav-item">
             <i class="fa-solid fa-calendar-days"></i>
             <span>Calendrier</span>
+        </a>
+        <a href="{% url 'notifications' %}" class="nav-item">
+            <i class="fa-solid fa-bell"></i>
+            <span>Notifications</span>
+            {% if unread_notif_count %}
+            <span class="notif-badge" style="position:relative;top:auto;right:auto;margin-left:auto;">
+                    {{ unread_notif_count }}
+                </span>
+            {% endif %}
         </a>
 
         {% if user.role == 'admin' %}

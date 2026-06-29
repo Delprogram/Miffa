@@ -9,7 +9,10 @@ class User(AbstractUser):
         ('member', 'Membre'),
         # ('guest', 'Invité'),
     )
-
+    GENDER_CHOICES = (
+        ('M', 'Homme'),
+        ('F', 'Femme'),
+    )
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
@@ -20,6 +23,7 @@ class User(AbstractUser):
     profession = models.CharField(max_length=150, blank=True)
     phone = models.CharField(max_length=20, blank=True)
     city = models.CharField(max_length=100, blank=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     # Champs de confidentialité
     hide_email = models.BooleanField(default=False)
     hide_birth_date = models.BooleanField(default=False)
@@ -80,10 +84,8 @@ class Relation(models.Model):
     related_member = models.ForeignKey('User', on_delete=models.CASCADE, related_name='relations_to')
     relation_type = models.CharField(max_length=20, choices=RELATION_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
-
     class Meta:
         unique_together = ('member', 'related_member')
-
     def __str__(self):
         return f"{self.member} → {self.related_member} ({self.relation_type})"
 

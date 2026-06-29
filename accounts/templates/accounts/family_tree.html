@@ -159,21 +159,21 @@
     <!-- ARBRE -->
     <div class="tree-viewport" id="treeViewport">
         <div class="tree-canvas" id="treeCanvas">
+
             <svg id="treeSvg" width="{{ svg_width }}" height="{{ svg_height }}">
-                <!-- LIENS -->
                 {% for link in links %}
-                <line x1="{{ link.x1 }}" y1="{{ link.y1 }}" x2="{{ link.x2 }}" y2="{{ link.y2 }}"
+                <path d="{{ link.path }}"
                       class="tree-link tree-link-{{ link.type }}"/>
                 {% endfor %}
             </svg>
 
-            <!-- NŒUDS (en HTML par-dessus le SVG pour les photos rondes) -->
             {% for node in nodes %}
             <a href="{% url 'member_profile' node.member.id %}"
-               class="tree-node tree-node-{{ node.category }}"
+               class="tree-card tree-card-{{ node.category }}{% if node.is_self %} tree-card-self{% endif %}"
                style="left:{{ node.x }}px; top:{{ node.y }}px;"
                title="{{ node.member.first_name }} {{ node.member.last_name }}">
-                <div class="tree-node-avatar">
+
+                <div class="tree-avatar tree-avatar-{{ node.category }}">
                     {% if node.member.photo %}
                     <img src="{{ node.member.photo.url }}" alt="">
                     {% else %}
@@ -182,10 +182,18 @@
                     </div>
                     {% endif %}
                 </div>
-                <span class="tree-node-name">{{ node.member.first_name }}</span>
-                <span class="tree-node-relation">{{ node.relation_label }}</span>
+
+                <div class="tree-info">
+                    <strong>{{ node.member.first_name }}
+                        <i class="fa-solid {% if node.member.gender == 'M' %}fa-mars{% else %}fa-venus{% endif %}"
+                           style="color:{% if node.member.gender == 'M' %}#1565c0{% else %}#c2185b{% endif %}; font-size:0.7em; margin-left:4px;"
+                           title="{{ node.member.get_gender_display }}"></i></strong>
+                    <small>{{ node.relation_label }}</small>
+                </div>
+
             </a>
             {% endfor %}
+
         </div>
     </div>
     {% else %}

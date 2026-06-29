@@ -152,8 +152,7 @@
                         {% if user.photo %}
                         <img src="{{ user.photo.url }}" alt="">
                         {% else %}
-                        <div class="avatar-placeholder">{{ user.first_name|first|upper }}{{ user.last_name|first|upper
-                            }}
+                        <div class="avatar-placeholder">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
                         </div>
                         {% endif %}
                     </div>
@@ -182,8 +181,7 @@
                         {% if post.author.photo %}
                         <img src="{{ post.author.photo.url }}" alt="">
                         {% else %}
-                        <div class="avatar-placeholder">{{ post.author.first_name|first|upper }}{{
-                            post.author.last_name|first|upper }}
+                        <div class="avatar-placeholder">{{ post.author.first_name|first|upper }}{{ post.author.last_name|first|upper }}
                         </div>
                         {% endif %}
                     </div>
@@ -238,8 +236,7 @@
                             {% if comment.author.photo %}
                             <img src="{{ comment.author.photo.url }}" alt="">
                             {% else %}
-                            <div class="avatar-placeholder-sm">{{ comment.author.first_name|first|upper }}{{
-                                comment.author.last_name|first|upper }}
+                            <div class="avatar-placeholder-sm">{{ comment.author.first_name|first|upper }}{{ comment.author.last_name|first|upper }}
                             </div>
                             {% endif %}
                         </div>
@@ -281,8 +278,7 @@
                     {% if b.member.photo %}
                     <img src="{{ b.member.photo.url }}" alt="">
                     {% else %}
-                    <div class="avatar-placeholder-sm">{{ b.member.first_name|first|upper }}{{
-                        b.member.last_name|first|upper }}
+                    <div class="avatar-placeholder-sm">{{ b.member.first_name|first|upper }}{{ b.member.last_name|first|upper }}
                     </div>
                     {% endif %}
                     <div>

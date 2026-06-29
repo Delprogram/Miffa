@@ -139,7 +139,6 @@ body {
 }
 
 
-
 /* ─── FOOTER ─── */
 footer {
     background: var(--green-deep);
@@ -148,5 +147,18 @@ footer {
     padding: 32px 40px;
     font-size: 14px;
 }
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--green-mid);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    transition: gap 0.2s;
+}
+
 
 footer span { color: var(--green-soft); }

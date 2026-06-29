@@ -1,0 +1,194 @@
+/* ─── VARIABLES (au cas où global.css n'est pas chargé) ─── */
+:root {
+    --green-deep:   #1a3d2b;
+    --green-mid:    #2e7d32;
+    --green-soft:   #4caf50;
+    --green-light:  #e8f5e9;
+    --green-pale:   #f4faf4;
+    --white:        #ffffff;
+    --text-dark:    #1a2e1f;
+    --text-mid:     #3d5a42;
+    --text-light:   #7a9e80;
+    --red:          #e53935;
+    --border:       #e0ebe0;
+    --shadow:       0 8px 32px rgba(26,61,43,0.12);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ─── PAGE BACKGROUND ─── */
+body {
+    font-family: 'DM Sans', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background:
+        radial-gradient(ellipse 60% 50% at 15% 85%, rgba(229,57,53,0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 85% 15%, rgba(46,125,50,0.06) 0%, transparent 70%),
+        var(--green-pale);
+    padding: 20px;
+}
+
+.delete-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* ─── CARD ─── */
+.delete-card {
+    background: var(--white);
+    border-radius: 22px;
+    box-shadow: 0 20px 60px rgba(26,61,43,0.16);
+    border: 1px solid var(--border);
+    padding: 3rem 2.5rem 2.5rem;
+    max-width: 460px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    animation: cardIn 0.4s ease;
+}
+
+@keyframes cardIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.delete-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--red), #ff8a80, var(--red));
+}
+
+/* ─── ICON ─── */
+.delete-icon-wrap {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, #fdecea, #fce4ec);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: var(--red);
+    margin: 0 auto 1.4rem;
+    box-shadow: 0 6px 18px rgba(229,57,53,0.18);
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.05); }
+}
+
+/* ─── TEXT ─── */
+.delete-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--text-dark);
+    margin-bottom: 0.8rem;
+}
+
+.subtitle {
+    color: var(--text-light);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+}
+
+.warning-text {
+    color: var(--red);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.delete-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 1.6rem 0;
+}
+
+/* ─── ACTIONS ─── */
+.delete-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-top: 1.4rem;
+}
+
+.btn-confirm-delete {
+    padding: 13px;
+    background: linear-gradient(135deg, var(--red), #c62828);
+    color: var(--white);
+    border: none;
+    border-radius: 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(229,57,53,0.3);
+}
+
+.btn-confirm-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(229,57,53,0.4);
+}
+
+.btn-confirm-delete:active {
+    transform: translateY(0);
+}
+
+.btn-cancel-delete {
+    padding: 13px;
+    background: var(--green-pale);
+    color: var(--text-mid);
+    border: 1.5px solid var(--border);
+    border-radius: 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-cancel-delete:hover {
+    background: var(--green-light);
+    border-color: var(--green-mid);
+    color: var(--green-mid);
+    transform: translateY(-1px);
+}
+
+/* ─── NOTE FOOTER ─── */
+.delete-note {
+    margin-top: 1.6rem;
+    font-size: 0.78rem;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    opacity: 0.85;
+}
+
+.delete-note i {
+    color: var(--green-mid);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 480px) {
+    .delete-card { padding: 2.4rem 1.6rem 2rem; }
+}

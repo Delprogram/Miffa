@@ -80,3 +80,11 @@ function togglePassword(fieldId, iconContainer) {
         icon.classList.replace('fa-eye-slash', 'fa-eye');
     }
 }
+
+document.getElementById('id_last_name').addEventListener('input', function () {
+    this.value = this.value.toUpperCase();
+});
+
+document.getElementById('familyName').addEventListener('input', function () {
+    this.value = this.value.toUpperCase();
+});
