@@ -136,7 +136,15 @@
     <!-- PROFIL MEMBRE -->
     <section class="profile-section">
         <div class="profile-card">
-            <div class="profile-cover"></div>
+            <div class="profile-cover-wrapper">
+                {% if member.family.banner %}
+                <img src="{{ member.family.banner.url }}" alt="Bannière" class="profile-cover-img"
+                     onclick="openPhotoViewer('{{ member.family.banner.url }}')">
+                {% else %}
+                <div class="profile-cover"></div>
+                {% endif %}
+
+            </div>
             <div class="profile-body">
                 <div class="profile-avatar">
                     {% if member.photo %}
