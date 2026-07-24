@@ -1,6 +1,9 @@
-# 🌱 MIFFA — My Interactive Family & Friends Application
+# 🌱 MIFFA
 
 > *Garder le lien, préserver la mémoire, célébrer ce qui nous unit.*
+
+
+![Aperçu de Miffa](images_Readme/miffa.png)
 
 MIFFA est une application web fullstack dédiée à la gestion de réseaux familiaux et amicaux. Elle permet à chaque famille de créer son propre espace privé, de gérer ses membres, de visualiser ses liens, de partager des souvenirs et de rester connectée — en temps réel.
 
@@ -14,28 +17,49 @@ MIFFA est une application web fullstack dédiée à la gestion de réseaux famil
 - Demandes d'adhésion et validation par l'admin
 - Profils personnalisés avec photo, biographie et date de naissance
 
+![Aperçu de la gestion des membres](images_Readme/gestion_membres.png)
+![Aperçu de la section membres](images_Readme/membres.png)
+
 ### 🌳 Arbre généalogique
 - Visualisation interactive des liens familiaux
 - Algorithme **BFS (Breadth-First Search)** pour la traversée et l'affichage des relations
 - Définition des liens entre membres (parent, enfant, conjoint, etc.)
 
+![Aperçu de l'arbre généalogique](images_Readme/arbre.png)
+
+
 ### 📰 Fil d'actualité
 - Publication et partage d'annonces familiales
 - Interactions entre membres de la famille
+
+![Aperçu de la fil d'actualités](images_Readme/fil.png)
+
 
 ### 🖼️ Médiathèque
 - Upload et gestion de photos, vidéos et documents
 - Stockage via **Cloudinary**
 
+![Aperçu de la médiathèque](images_Readme/media.png)
+
+
 ### 📅 Calendrier
 - Événements familiaux partagés
 - Rappels et anniversaires
 
+![Aperçu du Calendrier](images_Readme/calendrier.png)
+
+
 ### ⏳ Chronologie
 - Histoire et événements familiaux classés dans le temps
 
+![Aperçu de la chronologie](images_Readme/chrono.png)
+
+
 ### ⚡ Temps réel
 - Notifications et mises à jour en temps réel via **Django Channels** et **WebSocket**
+
+![Aperçu des Notifications](images_Readme/notif.png)
+
 
 ---
 
